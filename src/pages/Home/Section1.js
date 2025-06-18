@@ -9,8 +9,9 @@ function Section1() {
             <Container>
                 <Row>
                     <Col lg={7} className="mb-5 mb-lg-0">
-                        <div className="position-relative">
-                            <img src={Burger} className="img-fluid" alt="Hero" />
+                        <div className="position-relative" style={{ marginTop: "170px" }}>
+
+                            <img src={Burger} className="img-fluid " alt="Hero" />
                             <div className="price_badge">
                                 <div className="badge_text">
                                     <h4 className="h4_xs"> Only</h4>
@@ -21,7 +22,7 @@ function Section1() {
                         </div>
                     </Col>
                     <Col lg={5}>
-                        <div className="hero_text text-center">
+                        <div className="hero_text text-center"  style={{ marginTop: "120px" }}>
                             <h1 className="text-white">New burger</h1>
                             <h2 className="text-white">With Onion</h2>
                             <p className="text-white pt-2 pb-4">Feugiat primis ligula risus auctor laoreet augue egestas mauris

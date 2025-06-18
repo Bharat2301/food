@@ -36,3 +36,14 @@
     transform: rotate(360deg);
   }
 }
+
+
+
+
+@media (min-width: 992px) {
+    .col-lg-5 {
+        flex: 0 0 auto;
+        width: 41.66666667%;
+        margin-top: 128px;
+    }
+}
