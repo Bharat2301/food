@@ -31,7 +31,7 @@ function Footer() {
             <Col sm={6} lg={3} className="mb-4 mb-lg-0">
               <div className="text-center">
                 <h5>Location</h5>
-                <p>RAJASTHAN, JAIPUR</p>
+                <p>AHMEDABAD, GUJARAT</p>
                 <p>KUKAS, 302028</p>
                 <p>INDIA</p>
               </div>
@@ -90,7 +90,7 @@ function Footer() {
                 <ul className="list-unstyled text-center mb-0">
                   <li>
                     <Link to="/">
-                      © 2024 <span>BHAVNA SINGH</span>. All Rights Reserved
+                      © 2024 <span>BHARAT TEJWANI</span>. All Rights Reserved
                     </Link>
                   </li>
                   <li>
