@@ -62,22 +62,22 @@ function Footer() {
                 <ul className="list-unstyled text-center mt-2">
                   <li>
                     <Link to="/">
-                      <i class="bi bi-facebook"></i>
+                      <i className="bi bi-facebook"></i>
                     </Link>
                   </li>
                   <li>
                     <Link to="/">
-                      <i class="bi bi-twitter"></i>
+                      <i className="bi bi-twitter"></i>
                     </Link>
                   </li>
                   <li>
                     <Link to="/">
-                      <i class="bi bi-instagram"></i>
+                      <i className="bi bi-instagram"></i>
                     </Link>
                   </li>
                   <li>
                     <Link to="/">
-                      <i class="bi bi-youtube"></i>
+                      <i className="bi bi-youtube"></i>
                     </Link>
                   </li>
                 </ul>
@@ -112,7 +112,7 @@ function Footer() {
       {/* Sroll To Top */}
       {isVisible && (
         <div className="scroll_top" onClick={scrollTop}>
-          <i class="bi bi-arrow-up"></i>
+          <i className="bi bi-arrow-up"></i>
         </div>
       )}
     </>
