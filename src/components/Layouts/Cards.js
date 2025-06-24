@@ -41,7 +41,7 @@ function Cards({ id, image, rating, title, paragraph, price, renderRatingIcons }
             <div className="add_to_card">
               <button
                 onClick={handleAddToCart}
-                className="btn btn-outline-primary"
+                className="btn btn-danger"
               >
                 <i className="bi bi-bag me-2"></i>
                 Add To Cart
