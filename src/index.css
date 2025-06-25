@@ -113,7 +113,8 @@ background: #f1f1f1;
   .btn_red:hover,
 
   .btn_red:focus{
-    color:var(--white);
+    color:var(--yellow);
     background: transparent;
     border-color: var(--light-red);
+    
   }
