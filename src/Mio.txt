@@ -1,11 +1,12 @@
-i have food folder in that i have src folder in that i have assets folder in that i have image then i have components\Layouts folder in that i have Cards.js file
-import React from 'react';
+i have food folder in that i have src folder in that i have assets in that i have images then i have components\Layouts folder in that i have Cards.js file
+import React, { useState } from 'react';
 import { Col, Card } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import useCartStore from '../../store/cartStore';
 
 function Cards({ id, image, rating, title, paragraph, price, renderRatingIcons }) {
   const addItem = useCartStore((state) => state.addItem);
+  const [isWishlisted, setIsWishlisted] = useState(false);
 
   const handleAddToCart = () => {
     addItem({
@@ -18,6 +19,10 @@ function Cards({ id, image, rating, title, paragraph, price, renderRatingIcons }
     });
   };
 
+  const toggleWishlist = () => {
+    setIsWishlisted(prev => !prev);
+  };
+
   return (
     <Col sm={6} lg={4} xl={3} className="mb-4">
       <Card className="overflow-hidden">
@@ -27,8 +32,8 @@ function Cards({ id, image, rating, title, paragraph, price, renderRatingIcons }
         <Card.Body>
           <div className="d-flex align-items-center justify-content-between">
             <div className="item_rating">{renderRatingIcons(rating)}</div>
-            <div className="wishlist">
-              <i className="bi bi-heart"></i>
+            <div className="wishlist" onClick={toggleWishlist} style={{ cursor: 'pointer' }}>
+              <i className={`bi ${isWishlisted ? 'bi-heart-fill text-danger' : 'bi-heart'}`}></i>
             </div>
           </div>
 
@@ -40,10 +45,7 @@ function Cards({ id, image, rating, title, paragraph, price, renderRatingIcons }
               <h5 className="mb-0">₹ {price}</h5>
             </div>
             <div className="add_to_card">
-              <button
-                onClick={handleAddToCart}
-                className="btn btn-outline-primary"
-              >
+              <button onClick={handleAddToCart} className="btn btn-danger">
                 <i className="bi bi-bag me-2"></i>
                 Add To Cart
               </button>
@@ -56,6 +58,7 @@ function Cards({ id, image, rating, title, paragraph, price, renderRatingIcons }
 }
 
 export default Cards;
+
 then i have Footer.js file
 import React, { useState, useEffect } from "react";
 import { Container, Row, Col } from "react-bootstrap";
@@ -532,7 +535,7 @@ const AboutPage = () => {
 
 export default AboutPage;
 
-then i have Blog.js file
+Then i have Blog.js file
 import React from "react";
 import PropTypes from "prop-types";
 import { FaEnvelope, FaSearch, FaFacebook, FaInstagram, FaTwitter, FaPinterest, FaRegClock, FaRegUser, FaRegCalendarAlt } from "react-icons/fa";
@@ -1043,6 +1046,7 @@ import '../../styles/CartStyle.css';
 function Cart() {
   const {
     cartItems,
+    fetchCartItems,
     updateQuantity,
     removeItem,
     getTotalAmount,
@@ -1050,17 +1054,35 @@ function Cart() {
   } = useCartStore();
   const navigate = useNavigate();
 
+  // Fetch cart items when component mounts
+  useEffect(() => {
+    fetchCartItems();
+  }, [fetchCartItems]);
+
+  // Load Razorpay script
+  useEffect(() => {
+    const script = document.createElement('script');
+    script.src = 'https://checkout.razorpay.com/v1/checkout.js';
+    script.async = true;
+    document.body.appendChild(script);
+    return () => {
+      document.body.removeChild(script);
+    };
+  }, []);
+
   const handleCheckout = async () => {
     const totalAmount = getTotalAmount() * 100; // Razorpay expects amount in paise
 
     try {
-      // Create order on your backend
+      // Create order on backend
       const orderResponse = await axios.post(
         'http://localhost:5000/api/create-order',
         {
+          userId: useCartStore.getState().userId,
           amount: totalAmount,
           currency: 'INR',
           receipt: `receipt_${Date.now()}`,
+          items: cartItems, // Include cart items
         }
       );
 
@@ -1075,10 +1097,19 @@ function Cart() {
         description: 'Order Payment',
         image: '/assets/logo/logo.png',
         order_id: order_id,
-        handler: function (response) {
-          // Handle successful payment
+        handler: async function (response) {
+          // Save order to MongoDB
+          await axios.post('http://localhost:5000/api/save-order', {
+            userId: useCartStore.getState().userId,
+            items: cartItems,
+            totalAmount: getTotalAmount(),
+            paymentId: response.razorpay_payment_id,
+            orderId: order_id,
+            currency,
+          });
+          // Clear cart after successful payment
+          await clearCart();
           alert('Payment Successful! Payment ID: ' + response.razorpay_payment_id);
-          clearCart();
           navigate('/');
         },
         prefill: {
@@ -1098,17 +1129,6 @@ function Cart() {
       alert('Failed to initiate payment. Please try again.');
     }
   };
-
-  // Load Razorpay script
-  useEffect(() => {
-    const script = document.createElement('script');
-    script.src = 'https://checkout.razorpay.com/v1/checkout.js';
-    script.async = true;
-    document.body.appendChild(script);
-    return () => {
-      document.body.removeChild(script);
-    };
-  }, []);
 
   if (cartItems.length === 0) {
     return (
@@ -1209,6 +1229,7 @@ function Contact() {
 }
 
 export default Contact
+
 then i have Home.js file
 import React, { useEffect, useRef } from "react";
 import Layout from '../../components/Layouts/Layout';
@@ -1272,91 +1293,15 @@ function Home() {
 export default Home;
 
 then i have Menu.js file
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
-import Image1 from "../../assets/menu/burger-11.jpg";
-import Image2 from "../../assets/menu/burger-12.jpg";
-import Image3 from "../../assets/menu/burger-13.jpg";
-import Image4 from "../../assets/menu/burger-14.jpg";
-import Image5 from "../../assets/menu/burger-15.jpg";
-import Image6 from "../../assets/menu/burger-16.jpg";
-import Image7 from "../../assets/menu/burger-17.jpg";
-import Image8 from "../../assets/menu/burger-18.jpg";
+import axios from 'axios';
 import Cards from '../../components/Layouts/Cards';
 import { Link } from 'react-router-dom';
-
-// Mock Data Cards
-const mockData = [
-  {
-    id: "0001",
-    image: Image1,
-    title: "Crispy Chicken",
-    paragraph: "Chicken breast, chilli sauce, tomatoes, pickles, coleslaw",
-    rating: 5,
-    price: 99,
-  },
-  {
-    id: "0002",
-    image: Image2,
-    title: "Ultimate Bacon",
-    paragraph: "House patty, cheddar cheese, bacon, onion, mustard",
-    rating: 4.5,
-    price: 199,
-  },
-  {
-    id: "0003",
-    image: Image3,
-    title: "Black Sheep",
-    paragraph: "American cheese, tomato relish, avocado, lettuce, red onion",
-    rating: 4,
-    price: 149,
-  },
-  {
-    id: "0004",
-    image: Image4,
-    title: "Vegan Burger",
-    paragraph: "House patty, cheddar cheese, bacon, onion, mustard",
-    rating: 3.5,
-    price: 179,
-  },
-  {
-    id: "0005",
-    image: Image5,
-    title: "Double Burger",
-    paragraph: "2 patties, cheddar cheese, mustard, pickles, tomatoes",
-    rating: 3.0,
-    price: 79,
-  },
-  {
-    id: "0006",
-    image: Image6,
-    title: "Turkey Burger",
-    paragraph: "Turkey, cheddar cheese, onion, lettuce, tomatoes, pickles",
-    rating: 3,
-    price: 99,
-  },
-  {
-    id: "0007",
-    image: Image7,
-    title: "Smokey House",
-    paragraph: "patty, cheddar cheese, onion, lettuce, tomatoes, pickles",
-    rating: 2.5,
-    price: 199,
-  },
-  {
-    id: "0008",
-    image: Image8,
-    title: "Classic Burger",
-    paragraph: "cheddar cheese, ketchup, mustard, pickles, onion",
-    rating: 2.0,
-    price: 149,
-  },
-];
 
 // Rating Logical Data
 const renderRatingIcons = (rating) => {
   const stars = [];
-
   for (let i = 0; i < 5; i++) {
     if (rating > 0.5) {
       stars.push(<i key={i} className="bi bi-star-fill"></i>);
@@ -1372,6 +1317,24 @@ const renderRatingIcons = (rating) => {
 };
 
 function Menu() {
+  const [menuItems, setMenuItems] = useState([]);
+  const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    const fetchMenuItems = async () => {
+      try {
+        const response = await axios.get('http://localhost:5000/api/items');
+        setMenuItems(response.data.data);
+      } catch (error) {
+        console.error('Error fetching menu items:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchMenuItems();
+  }, []);
+
+  if (loading) return <div>Loading...</div>;
+
   return (
     <section className="menu_section">
       <Container>
@@ -1384,21 +1347,21 @@ function Menu() {
           </Col>
         </Row>
         <Row>
-          {mockData.map((cardData) => ( 
+          {menuItems.map((cardData) => (
             <Cards
-              key={cardData.id} // Changed from index to cardData.id
-              id={cardData.id} // Added id prop
+              key={cardData.id}
+              id={cardData.id}
               image={cardData.image}
               rating={cardData.rating}
               title={cardData.title}
               paragraph={cardData.paragraph}
               price={cardData.price}
               renderRatingIcons={renderRatingIcons}
-            /> 
+            />
           ))}
         </Row>
-        <Row className="pt-5"> 
-          <Col sm={6} lg={5}>  
+        <Row className="pt-5">
+          <Col sm={6} lg={5}>
             <div className="ads_box ads_img1 mb-5 mb-md-0">
               <h4 className="mb-0">GET YOUR FREE</h4>
               <h5>CHEESE FRIES</h5>
@@ -1407,7 +1370,7 @@ function Menu() {
               </Link>
             </div>
           </Col>
-          <Col sm={6} lg={7}>  
+          <Col sm={6} lg={7}>
             <div className="ads_box ads_img2">
               <h4 className="mb-0">GET YOUR FREE</h4>
               <h5>CHEESE FRIES</h5>
@@ -1424,7 +1387,6 @@ function Menu() {
 
 export default Menu;
 then i have Review.js file
-
 import React from 'react'
 
 function Shop() {
@@ -1438,7 +1400,7 @@ function Shop() {
 export default Shop
 
 then i have Section1.js file
-import React from 'react';
+ import React from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
 import Burger from "../../assets/hero/hero-2.png";
 import { Link } from 'react-router-dom';
@@ -2007,62 +1969,111 @@ function Section7() {
 export default Section7;
 then i have store folder in that i have cartStore.js file
 import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
+import axios from 'axios';
 
-const useCartStore = create(
-  persist(
-    (set, get) => ({
-      cartItems: [],
-      addItem: (item) => {
-        const existingItem = get().cartItems.find((i) => i.id === item.id);
-        if (existingItem) {
-          set((state) => ({
-            cartItems: state.cartItems.map((i) =>
+// Helper to get or generate userId
+const getUserId = () => {
+  let userId = localStorage.getItem('userId');
+  if (!userId) {
+    userId = Math.random().toString(36).substring(2, 15); // Simple random ID (replace with UUID if preferred)
+    localStorage.setItem('userId', userId);
+  }
+  return userId;
+};
+
+const useCartStore = create((set, get) => ({
+  cartItems: [],
+  userId: getUserId(),
+
+  // Fetch cart items from backend
+  fetchCartItems: async () => {
+    try {
+      const response = await axios.get(`http://localhost:5000/api/cart/${get().userId}`);
+      set({ cartItems: response.data });
+    } catch (error) {
+      console.error('Error fetching cart items:', error);
+    }
+  },
+
+  // Add item to cart
+  addItem: async (item) => {
+    try {
+      const response = await axios.post('http://localhost:5000/api/cart', {
+        userId: get().userId,
+        item,
+      });
+      set((state) => ({
+        cartItems: state.cartItems.some((i) => i.id === item.id)
+          ? state.cartItems.map((i) =>
               i.id === item.id ? { ...i, quantity: i.quantity + 1 } : i
-            ),
-          }));
-        } else {
-          set((state) => ({
-            cartItems: [...state.cartItems, { ...item, quantity: 1 }],
-          }));
-        }
-      },
-      updateQuantity: (id, quantity) => {
-        if (quantity < 1) {
-          set((state) => ({
-            cartItems: state.cartItems.filter((item) => item.id !== id),
-          }));
-        } else {
-          set((state) => ({
-            cartItems: state.cartItems.map((item) =>
-              item.id === id ? { ...item, quantity } : item
-            ),
-          }));
-        }
-      },
-      removeItem: (id) => {
+            )
+          : [...state.cartItems, { ...response.data, quantity: response.data.quantity || 1 }],
+      }));
+    } catch (error) {
+      console.error('Error adding item to cart:', error);
+    }
+  },
+
+  // Update item quantity
+  updateQuantity: async (id, quantity) => {
+    try {
+      await axios.put(`http://localhost:5000/api/cart/${id}`, {
+        userId: get().userId,
+        quantity,
+      });
+      if (quantity < 1) {
         set((state) => ({
           cartItems: state.cartItems.filter((item) => item.id !== id),
         }));
-      },
-      clearCart: () => {
-        set({ cartItems: [] });
-      },
-      getTotalItems: () => {
-        return get().cartItems.reduce((total, item) => total + item.quantity, 0);
-      },
-      getTotalAmount: () => {
-        return get().cartItems.reduce(
-          (total, item) => total + item.price * item.quantity,
-          0
-        );
-      },
-    }),
-    {
-      name: 'cart-storage', // Persist cart in localStorage
+      } else {
+        set((state) => ({
+          cartItems: state.cartItems.map((item) =>
+            item.id === id ? { ...item, quantity } : item
+          ),
+        }));
+      }
+    } catch (error) {
+      console.error('Error updating item quantity:', error);
     }
-  )
-);
+  },
+
+  // Remove item from cart
+  removeItem: async (id) => {
+    try {
+      await axios.delete(`http://localhost:5000/api/cart/${id}`, {
+        data: { userId: get().userId },
+      });
+      set((state) => ({
+        cartItems: state.cartItems.filter((item) => item.id !== id),
+      }));
+    } catch (error) {
+      console.error('Error removing item from cart:', error);
+    }
+  },
+
+  // Clear cart
+  clearCart: async () => {
+    try {
+      await axios.delete(`http://localhost:5000/api/cart/clear/${get().userId}`);
+      set({ cartItems: [] });
+    } catch (error) {
+      console.error('Error clearing cart:', error);
+    }
+  },
+
+  // Get total items
+  getTotalItems: () => {
+    return get().cartItems.reduce((total, item) => total + item.quantity, 0);
+  },
+
+  // Get total amount
+  getTotalAmount: () => {
+    return get().cartItems.reduce(
+      (total, item) => total + item.price * item.quantity,
+      0
+    );
+  },
+}));
 
 export default useCartStore;
 then i have styles folder in that i have CartStyle.css file
@@ -2159,7 +2170,7 @@ header .logo img {
 header .nav-link{
     display: inline-flex;
     justify-content: center;
-    color:var(--white);
+   
     padding: 0 1rem !important;
     font-size: 1.125rem;
     font-weight: 500;
@@ -2170,6 +2181,7 @@ header .nav-link{
     -o-transition: all 15ms ease-in-out;
     -moz-transition: all 15ms ease-in-out;
     transition: all 15ms ease-in-out;
+    color: var(--white);
 }
 
 header .sticky .nav-link{
@@ -2346,6 +2358,7 @@ then i have HomeStyle.css file
         color: var(--grey);
         font-size: 20px;
         cursor: pointer;
+        transition: color 0.3s ease;
 
     }
     .menu_section .wishlist i:hover {

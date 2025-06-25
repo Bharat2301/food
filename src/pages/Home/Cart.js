@@ -8,6 +8,7 @@ import '../../styles/CartStyle.css';
 function Cart() {
   const {
     cartItems,
+    fetchCartItems,
     updateQuantity,
     removeItem,
     getTotalAmount,
@@ -15,17 +16,35 @@ function Cart() {
   } = useCartStore();
   const navigate = useNavigate();
 
+  // Fetch cart items when component mounts
+  useEffect(() => {
+    fetchCartItems();
+  }, [fetchCartItems]);
+
+  // Load Razorpay script
+  useEffect(() => {
+    const script = document.createElement('script');
+    script.src = 'https://checkout.razorpay.com/v1/checkout.js';
+    script.async = true;
+    document.body.appendChild(script);
+    return () => {
+      document.body.removeChild(script);
+    };
+  }, []);
+
   const handleCheckout = async () => {
     const totalAmount = getTotalAmount() * 100; // Razorpay expects amount in paise
 
     try {
-      // Create order on your backend
+      // Create order on backend
       const orderResponse = await axios.post(
         'http://localhost:5000/api/create-order',
         {
+          userId: useCartStore.getState().userId,
           amount: totalAmount,
           currency: 'INR',
           receipt: `receipt_${Date.now()}`,
+          items: cartItems, // Include cart items
         }
       );
 
@@ -40,10 +59,19 @@ function Cart() {
         description: 'Order Payment',
         image: '/assets/logo/logo.png',
         order_id: order_id,
-        handler: function (response) {
-          // Handle successful payment
+        handler: async function (response) {
+          // Save order to MongoDB
+          await axios.post('http://localhost:5000/api/save-order', {
+            userId: useCartStore.getState().userId,
+            items: cartItems,
+            totalAmount: getTotalAmount(),
+            paymentId: response.razorpay_payment_id,
+            orderId: order_id,
+            currency,
+          });
+          // Clear cart after successful payment
+          await clearCart();
           alert('Payment Successful! Payment ID: ' + response.razorpay_payment_id);
-          clearCart();
           navigate('/');
         },
         prefill: {
@@ -63,17 +91,6 @@ function Cart() {
       alert('Failed to initiate payment. Please try again.');
     }
   };
-
-  // Load Razorpay script
-  useEffect(() => {
-    const script = document.createElement('script');
-    script.src = 'https://checkout.razorpay.com/v1/checkout.js';
-    script.async = true;
-    document.body.appendChild(script);
-    return () => {
-      document.body.removeChild(script);
-    };
-  }, []);
 
   if (cartItems.length === 0) {
     return (
