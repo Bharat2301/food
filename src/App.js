@@ -8,6 +8,9 @@ import Blog from "./pages/Home/Blog";
 import Contact from "./pages/Home/Contact";
 import Cart from "./pages/Home/Cart";
 import Footer from "./components/Layouts/Footer";
+import Login from "./pages/Home/Login";
+import AdminLogin from "./pages/Home/AdminLogin";
+import Signup from "./pages/Home/Signup";
 
 
 function App(){
@@ -21,6 +24,9 @@ function App(){
       <Route path="/blog" element={ <Blog />}/>
       <Route path="/Cart" element={ <Cart />}/>
       <Route path="/Footer" element={ <Footer />}/>
+      <Route path="/Login" element={ <Login />}/>
+      <Route path="/Signup" element={ <Signup />}/>
+      <Route path="/AdminLogin" element={ <AdminLogin />}/>
       <Route path="*" element={<h1>404 Not Found</h1>} />
     </Routes>
   </Router>

@@ -31,7 +31,7 @@ function Section1() {
                                 rhoncus feugiat
 
                             </p>
-                            <Link to="/" className="btn order_now"> Order Now</Link>
+                            <Link to="/Login" className="btn order_now"> Login </Link>
                         </div></Col>
                 </Row>
             </Container>
