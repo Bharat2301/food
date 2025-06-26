@@ -51,7 +51,7 @@ function Section3() {
           <Col lg={{ span: 8, offset: 2 }} className="text-center mb-5">
             <h2>OUR CRAZY BURGERS</h2>
             <p className="para">
-              Aliquam a augue sushfjkabjfbs, fjdsbjfbjsdbfkjs fbjafkbsa jbfjksbfkb bdskjfbksjdfb fhsfjdsfb,sdvhjasvhasv,fhvdhfhd,ajfjfg
+              Our burgers are clinically insane (in the best way). Warning: Side effects may include happiness, sauce on your shirt, and addiction.
             </p>
           </Col>
         </Row>
@@ -82,7 +82,7 @@ function Section3() {
           <Col sm={6} lg={7}>
             <div className="ads_box ads_img2">
               <h4 className="mb-0">GET YOUR FREE</h4>
-              <h5>CHEESE FRIES</h5>
+              <h5>CHEESE Burger</h5>
               <Link to="/" className="btn btn_red px-4 rounded-0">
                 Learn More
               </Link>

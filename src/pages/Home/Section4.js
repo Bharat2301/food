@@ -20,23 +20,22 @@ function Section4() {
             >
               <h2>Nothing brings people together like a good burger</h2>
               <p>
-                Semper lacus cursus porta primis lijfjdfkk sjbjsbf dbfjsbfkd jhdfsfk sdfjbsdfj jsdfjdsb
-                dfjbsdfjbd jfbjsdbf jdbfjdsb jbfjsdb asvfhasv nhgfd kewhfkew ewwe wkethke jhewhewkj ehwthewjew
+                There’s something magical about sharing a juicy, flavorful burger with friends and family. Whether it’s a backyard BBQ, a late-night diner run, or a celebration, burgers create moments worth savoring.
               </p>
               <ul>
                 <li>
                   <p>
-                    Fringilla risus, jsbjdbs sbjsbf sjbjsbf jsfbjs jsbfjsb jsbfjsbeu jfbeb jegi jsbfjs
+                   🍔 Handcrafted patties with premium beef, seasoned to perfection
                   </p>
                 </li>
                 <li>
                   <p>
-                    Quareat sbfnsfb asbfjsab hsfvhs hsvfshv jsbfj
+                   🧀 Melted cheese, crispy bacon, and fresh toppings piled high
                   </p>
                 </li>
                 <li>
                   <p>
-                    Nemo ipsam egetsa jdbfjdb agsdgs jsfhsdgh sfhs hdkgkb jsbfjg wjrw gruwgrugw wrguwg
+                   🥗 Customizable for every taste – from classic to adventurous
                   </p>
                 </li>
               </ul>

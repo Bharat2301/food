@@ -31,9 +31,10 @@ function Footer() {
             <Col sm={6} lg={3} className="mb-4 mb-lg-0">
               <div className="text-center">
                 <h5>Location</h5>
-                <p>AHMEDABAD, GUJARAT</p>
-                <p>KUKAS, 302028</p>
-                <p>INDIA</p>
+                <p>Burger House</p>
+                <p>SG Highway, Thaltej</p>
+                <p>Ahmedabad – 380054 </p>
+                <p>Gujarat, India</p>
               </div>
             </Col>
             <Col sm={6} lg={3} className="mb-4 mb-lg-0">

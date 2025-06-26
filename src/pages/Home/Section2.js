@@ -12,17 +12,17 @@ const mockData = [
     {
       image: Pizza,
       title: "Original",
-      paragraph: `Porta semper lacus cursus, feugiat primis ultrice a ligula risus auctor an tempus feugiat dolor lacinia cubilia curae integer orci congue and metus integer primis in integer metus`,
+      paragraph: `Hand-tossed crust perfected over generations, topped with our signature tomato sauce, fresh mozzarella, and garden-picked basil. Baked in a stone-fired oven for that irresistible crispy yet chewy texture - just like Nonna used to make.`,
     },
     {
       image: Salad,
       title: "Qualty Foods",
-      paragraph: `Porta semper lacus cursus, feugiat primis ultrice a ligula risus auctor an tempus feugiat dolor lacinia cubilia curae integer orci congue and metus integer primis in integer metus`,
+      paragraph: `Fresh, crisp greens harvested at peak freshness, paired with locally-sourced vegetables and premium ingredients. Each vibrant bowl is packed with nutrient-rich superfoods, house-made dressings, and artisanal toppings - because quality matters in every bite. `,
     },
     {
       image: Delivery,
       title: "Fastest Delivery",
-      paragraph: `Porta semper lacus cursus, feugiat primis ultrice a ligula risus auctor an tempus feugiat dolor lacinia cubilia curae integer orci congue and metus integer primis in integer metus`,
+      paragraph: `Hungry? Your food arrives at lightning speed! Our riders hit the road the moment your order is placed, ensuring piping-hot meals reach your door in record time. Track your delivery in real-time—because great food shouldn’t keep you waiting.`,
     },
     // Add more mock data objects as needed
   ];
@@ -37,7 +37,7 @@ function Section2() {
             <Col lg={{span:8, offset:2}} className="text-center">
             <h2> The burger tastes better when you eat it with your family</h2>
             <p>
-            Feugiat primis ligula risus auctor laoreet augue egestas mauris Feugiat primis ligula risus auctor laoreet augue egestas mauris viverra tortor in iaculis pretium at magna mauris ipsum primis rhoncus feugiat
+          Share the joy of our new burger sensation—stacked with crispy golden onions and bold, smoky flavor—with those who matter most. Every juicy bite of our fire-grilled beef patty, melted cheddar, and crunchy beer-battered onions becomes even more delicious when enjoyed together.
 
                 </p>
          < Link to="/" className="btn order_now btn_red">

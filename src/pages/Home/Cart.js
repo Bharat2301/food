@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Container, Row, Col, Table, Button, Form } from 'react-bootstrap';
+import { Container,  Table, Button, Form } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import useCartStore from '../../store/cartStore';
 import axios from 'axios';

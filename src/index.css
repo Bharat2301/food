@@ -1,5 +1,3 @@
-/* Import Google Fonts (Lilita One, Oswald, Roboto) */
-
 @import url("https://fonts.googleapis.com/css2?family=Lilita+One&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Lilita+One&family=Oswald:wght@200;300;400;500;600;700&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Lilita+One&family=Oswald:wght@200;300;400;500;600;700&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap");
@@ -61,8 +59,8 @@ p{
 
 /* Achor Tag */
 a{
-  color:var(--light-black);
-  text-decoration: none;
+  color: var(--light-black)!important;
+  text-decoration: none !important;
   --webkit-transition: all 400ms ease-in-out;
   -moz-transition: all 400ms ease-in-out;
   -o-transition: all 400ms ease-in-out;
@@ -83,38 +81,182 @@ background: #f1f1f1;
 }
 
 
-.order_now{
-  color:var(--light-black);
-  background: var(--yellow);
-  border-color: var(--yellow);
-  padding:15px 38px;
-  font-size: 18px;
-  font-weight: 600;
-  letter-spacing: 0.5px;
-  font-family:var(--oswald-font);
-  vertical-align: middle;
-  text-transform: uppercase;
-  transition: all 0.3s ease-in-out;
-  }
+.order_now {
+    background: #f7be27 !important;
+    background: var(--yellow)!important;
+    border-color: #f7be27 !important;
+    border-color: var(--yellow )!important;
+    color: #333!important;
+    color: var(--light-black)!important;
+    font-family: Oswald, sans-serif !important;
+    font-family: var(--oswald-font) !important;
+    border-color: var(--yellow ) !important;
+    font-size: 18px !important;
+    font-weight: 600 !important;
+    letter-spacing: .5px !important;
+    padding: 15px 38px !important;
+    text-transform: uppercase !important;
+    transition: all .3s ease-in-out !important;
+    vertical-align: middle !important;
+}
 /* Common Button*/
   .order_now:hover,
   .order_now:focus{
-    color:var(--white);
-    background: transparent;
-    border-color: var(--white);
+    color: var(--white) !important;;
+    background: transparent !important;
+    border-color: var(--white) !important;
   }
   
 
-  .btn_red{
-    color:var(--white);
+.btn_red {
+    background: #e3000e;
     background: var(--light-red);
-    border-color: var(--light-red);
-  }
+    color: #fff;
+    color: var(--white);
+}
   .btn_red:hover,
 
   .btn_red:focus{
-    color:var(--yellow);
+    color:var(--yellow) !important;
     background: transparent;
     border-color: var(--light-red);
     
   }
+/* ===== Centering Solution ===== */
+.login-root {
+  display: grid;
+  place-items: center;
+  min-height: 100vh;
+  width: 100vw;
+  padding: 20px;
+  background-color: #f7f7f7;
+}
+ 
+.login-card {
+  background: linear-gradient(to bottom right, #f7be27, #e3000e);
+  padding: 2px;
+  border-radius: 16px;
+  border: 1px solid #000;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+
+.login-content {
+  background: rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(10px);
+  border-radius: 14px;
+  padding: 2rem;
+  width: 100%;
+  max-width: 400px;
+}
+
+/* ===== Form Styles ===== */
+.login-title {
+  font-family: var(--lilita-font);
+  color: #e3000e;
+  font-size: 2rem;
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.form-group label {
+  font-family: var(--oswald-font);
+  color: #642f21;
+  font-weight: 500;
+}
+
+.form-group input {
+  padding: 12px 16px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-family: var(--roboto-font);
+  background: white;
+}
+
+.login-button {
+  background: white;
+  color: #e3000e;
+  padding: 14px;
+  border: none;
+  border-radius: 8px;
+  font-family: var(--oswald-font);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.login-button:hover {
+  background: #fff8e6;
+}
+
+/* ===== Links Section ===== */
+.login-links {
+  margin-top: 1.5rem;
+  text-align: center;
+}
+
+.login-links p {
+  font-family: var(--roboto-font);
+  color: #333;
+  margin-bottom: 1rem;
+}
+
+.links-container {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+}
+
+.auth-link {
+  font-family: var(--oswald-font);
+  color: #1e40af;
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+
+.btns {
+    --bs-btn-padding-x: 0.75rem;
+    --bs-btn-padding-y: 0.375rem;
+    --bs-btn-font-family: ;
+    --bs-btn-font-size: 1rem;
+    --bs-btn-font-weight: 400;
+    --bs-btn-line-height: 1.5;
+    --bs-btn-color: var(--bs-body-color);
+    --bs-btn-bg: transparent;
+    --bs-btn-border-width: var(--bs-border-width);
+    --bs-btn-border-color: transparent;
+    --bs-btn-border-radius: var(--bs-border-radius);
+    --bs-btn-hover-border-color: transparent;
+    --bs-btn-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15), 0 1px 1px rgba(0, 0, 0, 0.075);
+    --bs-btn-disabled-opacity: 0.65;
+    --bs-btn-focus-box-shadow: 0 0 0 0.25rem rgba(var(--bs-btn-focus-shadow-rgb), .5);
+    display: inline-block;
+    padding: var(--bs-btn-padding-y) var(--bs-btn-padding-x);
+    font-family: var(--bs-btn-font-family);
+    font-size: var(--bs-btn-font-size);
+    font-weight: var(--bs-btn-font-weight);
+    line-height: var(--bs-btn-line-height);
+    color: var(--bs-btn-color);
+    text-align: center;
+    text-decoration: none;
+    vertical-align: middle;
+    cursor: pointer;
+    -webkit-user-select: none;
+    user-select: none;
+    border: var(--bs-btn-border-width) solid var(--bs-btn-border-color);
+    border-radius: var(--bs-btn-border-radius);
+    
+    transition: color .15s ease-in-out, background-color .15s ease-in-out, border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+}

@@ -25,10 +25,7 @@ function Section1() {
                         <div className="hero_text text-center"  style={{ marginTop: "120px" }}>
                             <h1 className="text-white">New burger</h1>
                             <h2 className="text-white">With Onion</h2>
-                            <p className="text-white pt-2 pb-4">Feugiat primis ligula risus auctor laoreet augue egestas mauris
-                                Feugiat primis ligula risus auctor laoreet augue egestas mauris
-                                viverra tortor in iaculis pretium at magna mauris ipsum primis
-                                rhoncus feugiat
+                            <p className="text-white pt-2 pb-4">New burger sensation stacked with crispy golden onions and bold, savory flavor in every juicy bite. Featuring a perfectly grilled, beef patty smothered in our signature smoky sauce, layered with melted aged cheddar, and topped with fresh lettuce and vine-ripened tomatoes -all nestled  buttery, toasted brioche buns.
 
                             </p>
                             <Link to="/Login" className="btn order_now"> Login </Link>

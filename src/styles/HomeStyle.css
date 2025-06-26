@@ -319,6 +319,9 @@
   .contact_section a {
     font-size: 22px;
     font-weight: 700;
+    background: #e3000e;
+    color: var(--white)!important;
+
   }
   /* Home Footer 9.0 */
 footer {
@@ -336,7 +339,7 @@ footer {
   footer .calling {
     font-size: 1.8rem;
     font-weight: 800;
-    color: var(--yellow);
+    color: var(--yellow)!important;
   }
   footer ul li {
     display: inline-block;

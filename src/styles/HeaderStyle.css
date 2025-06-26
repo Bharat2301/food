@@ -61,7 +61,7 @@ header .nav-link{
     -o-transition: all 15ms ease-in-out;
     -moz-transition: all 15ms ease-in-out;
     transition: all 15ms ease-in-out;
-    color: var(--white);
+    color: var(--white) !important;
 }
 
 header .sticky .nav-link{
