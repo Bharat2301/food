@@ -70,7 +70,7 @@ header .sticky .nav-link{
 }
 
 header .nav-link:hover{
-    color: var(--yellow);
+    color: var(--yellow)!important;
 }
 
 header .cart{
