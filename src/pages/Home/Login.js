@@ -1,9 +1,16 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
+import { FaEye, FaEyeSlash } from 'react-icons/fa'; // Eye icons
 import '../../../src/index.css';
 
 function Login() {
+  const [showPassword, setShowPassword] = useState(false);
+
+  const togglePassword = () => {
+    setShowPassword((prev) => !prev);
+  };
+
   return (
     <div className="login-root">
       <motion.div
@@ -13,27 +20,33 @@ function Login() {
         className="login-card"
       >
         <div className="login-content">
-          <h2 className="login-title">
-            🍔 Burger Login
-          </h2>
+          <h2 className="login-title">🍔 Burger Login</h2>
 
           <form className="login-form">
             <div className="form-group">
               <label htmlFor="email">Email</label>
-              <input
-                type="email"
-                id="email"
-                placeholder="Enter your email"
-              />
+              <input type="email" id="email" placeholder="Enter your email" />
             </div>
 
-            <div className="form-group">
+            <div className="form-group password-group" style={{ position: 'relative' }}>
               <label htmlFor="password">Password</label>
               <input
-                type="password"
+                type={showPassword ? 'text' : 'password'}
                 id="password"
                 placeholder="Enter your password"
               />
+              <span
+                onClick={togglePassword}
+                style={{
+                  position: 'absolute',
+                  right: '12px',
+                  top: '43px',
+                  cursor: 'pointer',
+                  color: '#666',
+                }}
+              >
+                {showPassword ? <FaEyeSlash /> : <FaEye />}
+              </span>
             </div>
 
             <motion.button

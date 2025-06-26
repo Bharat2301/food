@@ -1,4 +1,5 @@
-i have food folder in that i have src folder in that i have assets in that i have images then i have components\Layouts folder in that i have Cards.js file
+i have food folder in that i have src folder in that i have assets folder in that i have images
+then i have components\Layouts folder in that i have Cards.js file
 import React, { useState } from 'react';
 import { Col, Card } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
@@ -93,9 +94,10 @@ function Footer() {
             <Col sm={6} lg={3} className="mb-4 mb-lg-0">
               <div className="text-center">
                 <h5>Location</h5>
-                <p>AHMEDABAD, GUJARAT</p>
-                <p>KUKAS, 302028</p>
-                <p>INDIA</p>
+                <p>Burger House</p>
+                <p>SG Highway, Thaltej</p>
+                <p>Ahmedabad – 380054 </p>
+                <p>Gujarat, India</p>
               </div>
             </Col>
             <Col sm={6} lg={3} className="mb-4 mb-lg-0">
@@ -109,7 +111,7 @@ function Footer() {
             <Col sm={6} lg={3} className="mb-4 mb-lg-0">
               <div className="text-center">
                 <h5>Order Now</h5>
-                <p>TESTY BURGER</p>
+                <p>TASTY BURGER</p>
                 <p>
                   <Link to="tel:9998887777" className="calling">
                     999-888-7777
@@ -535,7 +537,94 @@ const AboutPage = () => {
 
 export default AboutPage;
 
-Then i have Blog.js file
+then i have AdminLogin.js file
+import React, { useState } from 'react';
+import { motion } from 'framer-motion';
+import { Link } from 'react-router-dom';
+import { FaEye, FaEyeSlash } from 'react-icons/fa';
+import '../../../src/index.css';
+
+function AdminLogin() {
+  const [showPassword, setShowPassword] = useState(false);
+
+  const togglePassword = () => {
+    setShowPassword((prev) => !prev);
+  };
+
+  return (
+    <div className="login-root">
+      <motion.div
+        initial={{ opacity: 0, y: -30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+        className="login-card"
+      >
+        <div className="login-content">
+          <h2 className="login-title">🍔 Admin Login</h2>
+
+          <form className="login-form">
+            <div className="form-group">
+              <label htmlFor="email">Admin Email</label>
+              <input
+                type="email"
+                id="email"
+                placeholder="Enter admin email"
+                required
+              />
+            </div>
+
+            <div className="form-group password-group" style={{ position: 'relative' }}>
+              <label htmlFor="password">Admin Password</label>
+              <input
+                type={showPassword ? 'text' : 'password'}
+                id="password"
+                placeholder="Enter admin password"
+                required
+              />
+              <span
+                onClick={togglePassword}
+                style={{
+                  position: 'absolute',
+                  right: '12px',
+                  top: '44px',
+                  cursor: 'pointer',
+                  color: '#666',
+                }}
+              >
+                {showPassword ? <FaEyeSlash /> : <FaEye />}
+              </span>
+            </div>
+
+            <motion.button
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.97 }}
+              type="submit"
+              className="login-button"
+            >
+              🍟 Admin Sign In
+            </motion.button>
+          </form>
+
+          <div className="login-links">
+            <p>Not an admin?</p>
+            <div className="links-container">
+              <Link to="/" className="auth-link">
+                User Login
+              </Link>
+              <Link to="/signup" className="auth-link">
+                Sign Up
+              </Link>
+            </div>
+          </div>
+        </div>
+      </motion.div>
+    </div>
+  );
+}
+
+export default AdminLogin;
+
+then i have Blog.js file
 import React from "react";
 import PropTypes from "prop-types";
 import { FaEnvelope, FaSearch, FaFacebook, FaInstagram, FaTwitter, FaPinterest, FaRegClock, FaRegUser, FaRegCalendarAlt } from "react-icons/fa";
@@ -1037,7 +1126,7 @@ const BlogPage = () => {
 export default BlogPage;
 then i have Cart.js file
 import React, { useEffect } from 'react';
-import { Container, Row, Col, Table, Button, Form } from 'react-bootstrap';
+import { Container,  Table, Button, Form } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import useCartStore from '../../store/cartStore';
 import axios from 'axios';
@@ -1229,7 +1318,6 @@ function Contact() {
 }
 
 export default Contact
-
 then i have Home.js file
 import React, { useEffect, useRef } from "react";
 import Layout from '../../components/Layouts/Layout';
@@ -1292,6 +1380,87 @@ function Home() {
 
 export default Home;
 
+then i have Login.js file
+import React, { useState } from 'react';
+import { motion } from 'framer-motion';
+import { Link } from 'react-router-dom';
+import { FaEye, FaEyeSlash } from 'react-icons/fa'; // Eye icons
+import '../../../src/index.css';
+
+function Login() {
+  const [showPassword, setShowPassword] = useState(false);
+
+  const togglePassword = () => {
+    setShowPassword((prev) => !prev);
+  };
+
+  return (
+    <div className="login-root">
+      <motion.div
+        initial={{ opacity: 0, y: -30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+        className="login-card"
+      >
+        <div className="login-content">
+          <h2 className="login-title">🍔 Burger Login</h2>
+
+          <form className="login-form">
+            <div className="form-group">
+              <label htmlFor="email">Email</label>
+              <input type="email" id="email" placeholder="Enter your email" />
+            </div>
+
+            <div className="form-group password-group" style={{ position: 'relative' }}>
+              <label htmlFor="password">Password</label>
+              <input
+                type={showPassword ? 'text' : 'password'}
+                id="password"
+                placeholder="Enter your password"
+              />
+              <span
+                onClick={togglePassword}
+                style={{
+                  position: 'absolute',
+                  right: '12px',
+                  top: '43px',
+                  cursor: 'pointer',
+                  color: '#666',
+                }}
+              >
+                {showPassword ? <FaEyeSlash /> : <FaEye />}
+              </span>
+            </div>
+
+            <motion.button
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.97 }}
+              type="submit"
+              className="login-button"
+            >
+              🍟 Sign In
+            </motion.button>
+          </form>
+
+          <div className="login-links">
+            <p>Don't have an account?</p>
+            <div className="links-container">
+              <Link to="/signup" className="auth-link">
+                Sign Up
+              </Link>
+              <Link to="/AdminLogin" className="auth-link">
+                Admin Login
+              </Link>
+            </div>
+          </div>
+        </div>
+      </motion.div>
+    </div>
+  );
+}
+
+export default Login;
+
 then i have Menu.js file
 import React, { useEffect, useState } from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
@@ -1319,13 +1488,16 @@ const renderRatingIcons = (rating) => {
 function Menu() {
   const [menuItems, setMenuItems] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
   useEffect(() => {
     const fetchMenuItems = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/api/items');
-        setMenuItems(response.data.data);
+        const response = await axios.get('http://localhost:5000/api/menu');
+        setMenuItems(response.data);
       } catch (error) {
         console.error('Error fetching menu items:', error);
+        setError('Failed to load menu items. Please try again later.');
       } finally {
         setLoading(false);
       }
@@ -1334,6 +1506,8 @@ function Menu() {
   }, []);
 
   if (loading) return <div>Loading...</div>;
+  if (error) return <div>{error}</div>;
+  if (menuItems.length === 0) return <div>No menu items available.</div>;
 
   return (
     <section className="menu_section">
@@ -1342,7 +1516,7 @@ function Menu() {
           <Col lg={{ span: 8, offset: 2 }} className="text-center mb-5">
             <h2>OUR CRAZY BURGERS</h2>
             <p className="para">
-              Aliquam a augue sushfjkabjfbs, fjdsbjfbjsdbfkjs fbjafkbsa jbfjksbfkb bdskjfbksjdfb fhsfjdsfb,sdvhjasvhasv,fhvdhfhd,ajfjfg
+              Our burgers are clinically insane (in the best way). Warning: Side effects may include happiness, sauce on your shirt, and addiction.
             </p>
           </Col>
         </Row>
@@ -1373,7 +1547,7 @@ function Menu() {
           <Col sm={6} lg={7}>
             <div className="ads_box ads_img2">
               <h4 className="mb-0">GET YOUR FREE</h4>
-              <h5>CHEESE FRIES</h5>
+              <h5>CHEESE Burger</h5>
               <Link to="/" className="btn btn_red px-4 rounded-0">
                 Learn More
               </Link>
@@ -1400,7 +1574,7 @@ function Shop() {
 export default Shop
 
 then i have Section1.js file
- import React from 'react';
+import React from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
 import Burger from "../../assets/hero/hero-2.png";
 import { Link } from 'react-router-dom';
@@ -1427,13 +1601,10 @@ function Section1() {
                         <div className="hero_text text-center"  style={{ marginTop: "120px" }}>
                             <h1 className="text-white">New burger</h1>
                             <h2 className="text-white">With Onion</h2>
-                            <p className="text-white pt-2 pb-4">Feugiat primis ligula risus auctor laoreet augue egestas mauris
-                                Feugiat primis ligula risus auctor laoreet augue egestas mauris
-                                viverra tortor in iaculis pretium at magna mauris ipsum primis
-                                rhoncus feugiat
+                            <p className="text-white pt-2 pb-4">New burger sensation stacked with crispy golden onions and bold, savory flavor in every juicy bite. Featuring a perfectly grilled, beef patty smothered in our signature smoky sauce, layered with melted aged cheddar, and topped with fresh lettuce and vine-ripened tomatoes -all nestled  buttery, toasted brioche buns.
 
                             </p>
-                            <Link to="/" className="btn order_now"> Order Now</Link>
+                            <Link to="/Login" className="btn order_now"> Login </Link>
                         </div></Col>
                 </Row>
             </Container>
@@ -1457,17 +1628,17 @@ const mockData = [
     {
       image: Pizza,
       title: "Original",
-      paragraph: `Porta semper lacus cursus, feugiat primis ultrice a ligula risus auctor an tempus feugiat dolor lacinia cubilia curae integer orci congue and metus integer primis in integer metus`,
+      paragraph: `Hand-tossed crust perfected over generations, topped with our signature tomato sauce, fresh mozzarella, and garden-picked basil. Baked in a stone-fired oven for that irresistible crispy yet chewy texture - just like Nonna used to make.`,
     },
     {
       image: Salad,
       title: "Qualty Foods",
-      paragraph: `Porta semper lacus cursus, feugiat primis ultrice a ligula risus auctor an tempus feugiat dolor lacinia cubilia curae integer orci congue and metus integer primis in integer metus`,
+      paragraph: `Fresh, crisp greens harvested at peak freshness, paired with locally-sourced vegetables and premium ingredients. Each vibrant bowl is packed with nutrient-rich superfoods, house-made dressings, and artisanal toppings - because quality matters in every bite. `,
     },
     {
       image: Delivery,
       title: "Fastest Delivery",
-      paragraph: `Porta semper lacus cursus, feugiat primis ultrice a ligula risus auctor an tempus feugiat dolor lacinia cubilia curae integer orci congue and metus integer primis in integer metus`,
+      paragraph: `Hungry? Your food arrives at lightning speed! Our riders hit the road the moment your order is placed, ensuring piping-hot meals reach your door in record time. Track your delivery in real-time—because great food shouldn’t keep you waiting.`,
     },
     // Add more mock data objects as needed
   ];
@@ -1482,7 +1653,7 @@ function Section2() {
             <Col lg={{span:8, offset:2}} className="text-center">
             <h2> The burger tastes better when you eat it with your family</h2>
             <p>
-            Feugiat primis ligula risus auctor laoreet augue egestas mauris Feugiat primis ligula risus auctor laoreet augue egestas mauris viverra tortor in iaculis pretium at magna mauris ipsum primis rhoncus feugiat
+          Share the joy of our new burger sensation—stacked with crispy golden onions and bold, smoky flavor—with those who matter most. Every juicy bite of our fire-grilled beef patty, melted cheddar, and crunchy beer-battered onions becomes even more delicious when enjoyed together.
 
                 </p>
          < Link to="/" className="btn order_now btn_red">
@@ -1518,91 +1689,15 @@ function Section2() {
 
 export default Section2
 then i have Section3.js file
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
-import Image1 from "../../assets/menu/burger-11.jpg";
-import Image2 from "../../assets/menu/burger-12.jpg";
-import Image3 from "../../assets/menu/burger-13.jpg";
-import Image4 from "../../assets/menu/burger-14.jpg";
-import Image5 from "../../assets/menu/burger-15.jpg";
-import Image6 from "../../assets/menu/burger-16.jpg";
-import Image7 from "../../assets/menu/burger-17.jpg";
-import Image8 from "../../assets/menu/burger-18.jpg";
+import axios from 'axios';
 import Cards from '../../components/Layouts/Cards';
 import { Link } from 'react-router-dom';
-
-// Mock Data Cards
-const mockData = [
-  {
-    id: "0001",
-    image: Image1,
-    title: "Crispy Chicken",
-    paragraph: "Chicken breast, chilli sauce, tomatoes, pickles, coleslaw",
-    rating: 5,
-    price: 99,
-  },
-  {
-    id: "0002",
-    image: Image2,
-    title: "Ultimate Bacon",
-    paragraph: "House patty, cheddar cheese, bacon, onion, mustard",
-    rating: 4.5,
-    price: 199,
-  },
-  {
-    id: "0003",
-    image: Image3,
-    title: "Black Sheep",
-    paragraph: "American cheese, tomato relish, avocado, lettuce, red onion",
-    rating: 4,
-    price: 149,
-  },
-  {
-    id: "0004",
-    image: Image4,
-    title: "Vegan Burger",
-    paragraph: "House patty, cheddar cheese, bacon, onion, mustard",
-    rating: 3.5,
-    price: 179,
-  },
-  {
-    id: "0005",
-    image: Image5,
-    title: "Double Burger",
-    paragraph: "2 patties, cheddar cheese, mustard, pickles, tomatoes",
-    rating: 3.0,
-    price: 79,
-  },
-  {
-    id: "0006",
-    image: Image6,
-    title: "Turkey Burger",
-    paragraph: "Turkey, cheddar cheese, onion, lettuce, tomatoes, pickles",
-    rating: 3,
-    price: 99,
-  },
-  {
-    id: "0007",
-    image: Image7,
-    title: "Smokey House",
-    paragraph: "patty, cheddar cheese, onion, lettuce, tomatoes, pickles",
-    rating: 2.5,
-    price: 199,
-  },
-  {
-    id: "0008",
-    image: Image8,
-    title: "Classic Burger",
-    paragraph: "cheddar cheese, ketchup, mustard, pickles, onion",
-    rating: 2.0,
-    price: 149,
-  },
-];
 
 // Rating Logical Data
 const renderRatingIcons = (rating) => {
   const stars = [];
-
   for (let i = 0; i < 5; i++) {
     if (rating > 0.5) {
       stars.push(<i key={i} className="bi bi-star-fill"></i>);
@@ -1618,6 +1713,28 @@ const renderRatingIcons = (rating) => {
 };
 
 function Section3() {
+  const [menuItems, setMenuItems] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchMenuItems = async () => {
+      try {
+        const response = await axios.get('http://localhost:5000/api/menu');
+        setMenuItems(response.data);
+      } catch (error) {
+        console.error('Error fetching menu items:', error);
+        setError('Failed to load menu items.');
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchMenuItems();
+  }, []);
+
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>{error}</div>;
+
   return (
     <section className="menu_section">
       <Container>
@@ -1625,26 +1742,26 @@ function Section3() {
           <Col lg={{ span: 8, offset: 2 }} className="text-center mb-5">
             <h2>OUR CRAZY BURGERS</h2>
             <p className="para">
-              Aliquam a augue sushfjkabjfbs, fjdsbjfbjsdbfkjs fbjafkbsa jbfjksbfkb bdskjfbksjdfb fhsfjdsfb,sdvhjasvhasv,fhvdhfhd,ajfjfg
+              Our burgers are clinically insane (in the best way). Warning: Side effects may include happiness, sauce on your shirt, and addiction.
             </p>
           </Col>
         </Row>
         <Row>
-          {mockData.map((cardData) => ( 
+          {menuItems.map((cardData) => (
             <Cards
-              key={cardData.id} // Changed from index to cardData.id
-              id={cardData.id} // Added id prop
+              key={cardData.id}
+              id={cardData.id}
               image={cardData.image}
               rating={cardData.rating}
               title={cardData.title}
               paragraph={cardData.paragraph}
               price={cardData.price}
               renderRatingIcons={renderRatingIcons}
-            /> 
+            />
           ))}
         </Row>
-        <Row className="pt-5"> 
-          <Col sm={6} lg={5}>  
+        <Row className="pt-5">
+          <Col sm={6} lg={5}>
             <div className="ads_box ads_img1 mb-5 mb-md-0">
               <h4 className="mb-0">GET YOUR FREE</h4>
               <h5>CHEESE FRIES</h5>
@@ -1653,10 +1770,10 @@ function Section3() {
               </Link>
             </div>
           </Col>
-          <Col sm={6} lg={7}>  
+          <Col sm={6} lg={7}>
             <div className="ads_box ads_img2">
               <h4 className="mb-0">GET YOUR FREE</h4>
-              <h5>CHEESE FRIES</h5>
+              <h5>CHEESE Burger</h5>
               <Link to="/" className="btn btn_red px-4 rounded-0">
                 Learn More
               </Link>
@@ -1692,23 +1809,22 @@ function Section4() {
             >
               <h2>Nothing brings people together like a good burger</h2>
               <p>
-                Semper lacus cursus porta primis lijfjdfkk sjbjsbf dbfjsbfkd jhdfsfk sdfjbsdfj jsdfjdsb
-                dfjbsdfjbd jfbjsdbf jdbfjdsb jbfjsdb asvfhasv nhgfd kewhfkew ewwe wkethke jhewhewkj ehwthewjew
+                There’s something magical about sharing a juicy, flavorful burger with friends and family. Whether it’s a backyard BBQ, a late-night diner run, or a celebration, burgers create moments worth savoring.
               </p>
               <ul>
                 <li>
                   <p>
-                    Fringilla risus, jsbjdbs sbjsbf sjbjsbf jsfbjs jsbfjsb jsbfjsbeu jfbeb jegi jsbfjs
+                   🍔 Handcrafted patties with premium beef, seasoned to perfection
                   </p>
                 </li>
                 <li>
                   <p>
-                    Quareat sbfnsfb asbfjsab hsfvhs hsvfshv jsbfj
+                   🧀 Melted cheese, crispy bacon, and fresh toppings piled high
                   </p>
                 </li>
                 <li>
                   <p>
-                    Nemo ipsam egetsa jdbfjdb agsdgs jsfhsdgh sfhs hdkgkb jsbfjg wjrw gruwgrugw wrguwg
+                   🥗 Customizable for every taste – from classic to adventurous
                   </p>
                 </li>
               </ul>
@@ -1751,9 +1867,10 @@ function Section5() {
               <h4>Download mobile App and</h4>
               <h2>save up to 20%</h2>
               <p>
-                Aliquam a augue suscipit, luctus neque purus ipsum and neque
-                dolor primis libero tempus, blandit varius
+                Get exclusive deals, faster ordering, and instant savings—all at your fingertips!
               </p>
+              <p> ✅ Early access to special promotions</p>
+             
               <Link to="/">
                 <img
                   src={StoreIOS}
@@ -1856,16 +1973,14 @@ function Section6() {
                   <img src={User1} className="img-fluid" alt="User-1" />
                 </div>
                 <p>
-                  " Etiam sapien sem at sagittis congue augue massa varius
-                  sodales sapien undo tempus dolor egestas magna suscipit magna
-                  tempus aliquet porta sodales augue suscipit luctus neque "
+                  " Great food and fast service! The burgers were juicy and flavorful, and the delivery was quicker than expected. Would have given 5 stars if the fries were crispier, but overall a solid experience. Will definitely order again! "
                 </p>
                 <div className="item_rating mb-2">
                   <i className="bi bi-star-fill"></i>
                   <i className="bi bi-star-fill"></i>
                   <i className="bi bi-star-fill"></i>
                   <i className="bi bi-star-fill"></i>
-                  <i className="bi bi-star-fill"></i>
+                 
                 </div>
                 <h5>RAM KUMAR</h5>
               </Carousel.Caption>
@@ -1876,13 +1991,11 @@ function Section6() {
                   <img src={User2} className="img-fluid" alt="User-2" />
                 </div>
                 <p>
-                  " Etiam sapien sem at sagittis congue augue massa varius
-                  sodales sapien undo tempus dolor egestas magna suscipit magna
-                  tempus aliquet porta sodales augue suscipit luctus neque "
+                  " The burgers here are absolutely delicious - juicy patties with perfect seasoning! Loved the crispy onion topping and soft brioche buns. Service was quick and friendly too. Only reason I'm not giving 5 stars is because the fries could be hotter and crispier. Will definitely order again though - that smoky BBQ sauce is addictive! "
                 </p>
                 <div className="item_rating mb-2">
                   <i className="bi bi-star-fill"></i>
-                  <i className="bi bi-star-fill"></i>
+                  
                   <i className="bi bi-star-fill"></i>
                   <i className="bi bi-star-fill"></i>
                   <i className="bi bi-star-fill"></i>
@@ -1896,9 +2009,7 @@ function Section6() {
                   <img src={User3} className="img-fluid" alt="User-3" />
                 </div>
                 <p>
-                  " Etiam sapien sem at sagittis congue augue massa varius
-                  sodales sapien undo tempus dolor egestas magna suscipit magna
-                  tempus aliquet porta sodales augue suscipit luctus neque "
+                  " Absolutely phenomenal burger experience! The patty was cooked to perfection - juicy and packed with flavor. The combination of melted cheese, crispy bacon, and that special sauce created pure magic in every bite. Service was lightning fast and the food arrived piping hot. 10/10 would recommend the double cheeseburger with extra pickles! "
                 </p>
                 <div className="item_rating mb-2">
                   <i className="bi bi-star-fill"></i>
@@ -1916,9 +2027,7 @@ function Section6() {
                   <img src={User4} className="img-fluid" alt="User-4" />
                 </div>
                 <p>
-                  " Etiam sapien sem at sagittis congue augue massa varius
-                  sodales sapien undo tempus dolor egestas magna suscipit magna
-                  tempus aliquet porta sodales augue suscipit luctus neque "
+                  " Best burgers in town! Every ingredient tastes fresh and high-quality. The patties are juicy, the buns are soft, and the special sauce is addictive. Service was quick and friendly. Will definitely be coming back every weekend! "
                 </p>
                 <div className="item_rating mb-2">
                   <i className="bi bi-star-fill"></i>
@@ -1938,7 +2047,7 @@ function Section6() {
 }
 
 export default Section6;
-then i have Section7.js file
+then i have Section7.js file 
 import React from "react";
 import { Container, Row, Col } from "react-bootstrap";
 import { Link } from "react-router-dom";
@@ -1952,10 +2061,9 @@ function Section7() {
             <h4>We Guarantee</h4>
             <h2>30 Minutes Delivery!</h2>
             <p>
-              Aliquam a augue suscipit, luctus neque purus ipsum neque undo
-              dolor primis libero tempus, blandit a cursus varius luctus neque
-              magna
+              🚀 Hungry? We've got you covered!
             </p>
+            <p>✅ Your food arrives in 30 minutes or less – guaranteed</p>
             <Link to="/" className="btn btn_red px-4 py-2 rounded-0">
               Call: 999-888-7777
             </Link>
@@ -1967,6 +2075,125 @@ function Section7() {
 }
 
 export default Section7;
+then i have Signup.js file
+import React, { useState } from 'react';
+import { motion } from 'framer-motion';
+import { Link } from 'react-router-dom';
+import { FaEye, FaEyeSlash } from 'react-icons/fa'; // Icons
+import '../../../src/index.css';
+
+function Signup() {
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  const togglePassword = () => setShowPassword((prev) => !prev);
+  const toggleConfirmPassword = () => setShowConfirmPassword((prev) => !prev);
+
+  return (
+    <div className="login-root">
+      <motion.div
+        initial={{ opacity: 0, y: -30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+        className="login-card"
+      >
+        <div className="login-content">
+          <h2 className="login-title">🍔 Create Account</h2>
+
+          <form className="login-form">
+            <div className="form-group">
+              <label htmlFor="username">Username</label>
+              <input
+                type="text"
+                id="username"
+                placeholder="Enter your username"
+                required
+              />
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="email">Email</label>
+              <input
+                type="email"
+                id="email"
+                placeholder="Enter your email"
+                required
+              />
+            </div>
+
+            <div className="form-group password-group" style={{ position: 'relative' }}>
+              <label htmlFor="password">Password</label>
+              <input
+                type={showPassword ? 'text' : 'password'}
+                id="password"
+                placeholder="Enter your password"
+                required
+              />
+              <span
+                onClick={togglePassword}
+                style={{
+                  position: 'absolute',
+                  right: '12px',
+                  top: '44px',
+                  cursor: 'pointer',
+                  color: '#666',
+                }}
+              >
+                {showPassword ? <FaEyeSlash /> : <FaEye />}
+              </span>
+            </div>
+
+            <div className="form-group password-group" style={{ position: 'relative' }}>
+              <label htmlFor="confirm-password">Confirm Password</label>
+              <input
+                type={showConfirmPassword ? 'text' : 'password'}
+                id="confirm-password"
+                placeholder="Confirm your password"
+                required
+              />
+              <span
+                onClick={toggleConfirmPassword}
+                style={{
+                  position: 'absolute',
+                  right: '12px',
+                  top: '44px',
+                  cursor: 'pointer',
+                  color: '#666',
+                }}
+              >
+                {showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
+              </span>
+            </div>
+
+            <motion.button
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.97 }}
+              type="submit"
+              className="login-button"
+            >
+              🍟 Create Account
+            </motion.button>
+          </form>
+
+          <div className="login-links">
+            <p>Already have an account?</p>
+            <div className="links-container">
+              <Link to="/" className="auth-link">
+                Login
+              </Link>
+              <Link to="/AdminLogin" className="auth-link">
+                Admin Login
+              </Link>
+            </div>
+          </div>
+        </div>
+      </motion.div>
+    </div>
+  );
+}
+
+export default Signup;
+
 then i have store folder in that i have cartStore.js file
 import { create } from 'zustand';
 import axios from 'axios';
@@ -2181,16 +2408,16 @@ header .nav-link{
     -o-transition: all 15ms ease-in-out;
     -moz-transition: all 15ms ease-in-out;
     transition: all 15ms ease-in-out;
-    color: var(--white);
+    color: var(--white) !important;
 }
 
 header .sticky .nav-link{
-    color:var(--light-black);
+    color: var(--light-black) !important;;
 
 }
 
 header .nav-link:hover{
-    color: var(--yellow);
+    color: var(--yellow)!important;
 }
 
 header .cart{
@@ -2557,6 +2784,9 @@ then i have HomeStyle.css file
   .contact_section a {
     font-size: 22px;
     font-weight: 700;
+    background: #e3000e;
+    color: var(--white)!important;
+
   }
   /* Home Footer 9.0 */
 footer {
@@ -2574,7 +2804,7 @@ footer {
   footer .calling {
     font-size: 1.8rem;
     font-weight: 800;
-    color: var(--yellow);
+    color: var(--yellow)!important;
   }
   footer ul li {
     display: inline-block;
@@ -2697,6 +2927,9 @@ import Blog from "./pages/Home/Blog";
 import Contact from "./pages/Home/Contact";
 import Cart from "./pages/Home/Cart";
 import Footer from "./components/Layouts/Footer";
+import Login from "./pages/Home/Login";
+import AdminLogin from "./pages/Home/AdminLogin";
+import Signup from "./pages/Home/Signup";
 
 
 function App(){
@@ -2710,6 +2943,9 @@ function App(){
       <Route path="/blog" element={ <Blog />}/>
       <Route path="/Cart" element={ <Cart />}/>
       <Route path="/Footer" element={ <Footer />}/>
+      <Route path="/Login" element={ <Login />}/>
+      <Route path="/Signup" element={ <Signup />}/>
+      <Route path="/AdminLogin" element={ <AdminLogin />}/>
       <Route path="*" element={<h1>404 Not Found</h1>} />
     </Routes>
   </Router>

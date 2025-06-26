@@ -144,7 +144,7 @@ background: #f1f1f1;
   background: rgba(255, 255, 255, 0.3);
   backdrop-filter: blur(10px);
   border-radius: 14px;
-  padding: 2rem;
+  padding: 4rem;
   width: 100%;
   max-width: 400px;
 }
@@ -259,4 +259,8 @@ background: #f1f1f1;
     border-radius: var(--bs-btn-border-radius);
     
     transition: color .15s ease-in-out, background-color .15s ease-in-out, border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+}
+.password-group input {
+  width: 100%;
+  padding-right: 2.5rem; /* Space for eye icon */
 }

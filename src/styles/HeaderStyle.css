@@ -65,7 +65,7 @@ header .nav-link{
 }
 
 header .sticky .nav-link{
-    color:var(--light-black);
+    color: var(--light-black) !important;;
 
 }
 

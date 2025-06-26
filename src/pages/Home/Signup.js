@@ -1,9 +1,16 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
+import { FaEye, FaEyeSlash } from 'react-icons/fa'; // Icons
 import '../../../src/index.css';
 
 function Signup() {
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  const togglePassword = () => setShowPassword((prev) => !prev);
+  const toggleConfirmPassword = () => setShowConfirmPassword((prev) => !prev);
+
   return (
     <div className="login-root">
       <motion.div
@@ -13,9 +20,7 @@ function Signup() {
         className="login-card"
       >
         <div className="login-content">
-          <h2 className="login-title">
-            🍔 Create Account
-          </h2>
+          <h2 className="login-title">🍔 Create Account</h2>
 
           <form className="login-form">
             <div className="form-group">
@@ -38,24 +43,48 @@ function Signup() {
               />
             </div>
 
-            <div className="form-group">
+            <div className="form-group password-group" style={{ position: 'relative' }}>
               <label htmlFor="password">Password</label>
               <input
-                type="password"
+                type={showPassword ? 'text' : 'password'}
                 id="password"
                 placeholder="Enter your password"
                 required
               />
+              <span
+                onClick={togglePassword}
+                style={{
+                  position: 'absolute',
+                  right: '12px',
+                  top: '44px',
+                  cursor: 'pointer',
+                  color: '#666',
+                }}
+              >
+                {showPassword ? <FaEyeSlash /> : <FaEye />}
+              </span>
             </div>
 
-            <div className="form-group">
+            <div className="form-group password-group" style={{ position: 'relative' }}>
               <label htmlFor="confirm-password">Confirm Password</label>
               <input
-                type="password"
+                type={showConfirmPassword ? 'text' : 'password'}
                 id="confirm-password"
                 placeholder="Confirm your password"
                 required
               />
+              <span
+                onClick={toggleConfirmPassword}
+                style={{
+                  position: 'absolute',
+                  right: '12px',
+                  top: '44px',
+                  cursor: 'pointer',
+                  color: '#666',
+                }}
+              >
+                {showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
+              </span>
             </div>
 
             <motion.button

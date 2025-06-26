@@ -1,9 +1,16 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
+import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import '../../../src/index.css';
 
 function AdminLogin() {
+  const [showPassword, setShowPassword] = useState(false);
+
+  const togglePassword = () => {
+    setShowPassword((prev) => !prev);
+  };
+
   return (
     <div className="login-root">
       <motion.div
@@ -13,9 +20,7 @@ function AdminLogin() {
         className="login-card"
       >
         <div className="login-content">
-          <h2 className="login-title">
-            🍔 Admin Login
-          </h2>
+          <h2 className="login-title">🍔 Admin Login</h2>
 
           <form className="login-form">
             <div className="form-group">
@@ -28,14 +33,26 @@ function AdminLogin() {
               />
             </div>
 
-            <div className="form-group">
+            <div className="form-group password-group" style={{ position: 'relative' }}>
               <label htmlFor="password">Admin Password</label>
               <input
-                type="password"
+                type={showPassword ? 'text' : 'password'}
                 id="password"
                 placeholder="Enter admin password"
                 required
               />
+              <span
+                onClick={togglePassword}
+                style={{
+                  position: 'absolute',
+                  right: '12px',
+                  top: '44px',
+                  cursor: 'pointer',
+                  color: '#666',
+                }}
+              >
+                {showPassword ? <FaEyeSlash /> : <FaEye />}
+              </span>
             </div>
 
             <motion.button
