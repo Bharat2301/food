@@ -11,6 +11,7 @@ import Footer from "./components/Layouts/Footer";
 import Login from "./pages/Home/Login";
 import AdminLogin from "./pages/Home/AdminLogin";
 import Signup from "./pages/Home/Signup";
+import ProtectedRoute from "./pages/Home/ProtectedRoute";
 
 
 function App(){
@@ -22,7 +23,7 @@ function App(){
       <Route path="/menu" element={ <Menu />}/>
       
       <Route path="/blog" element={ <Blog />}/>
-      <Route path="/Cart" element={ <Cart />}/>
+      <Route path="/Cart" element={ <ProtectedRoute><Cart/></ProtectedRoute>}/>
       <Route path="/Footer" element={ <Footer />}/>
       <Route path="/Login" element={ <Login />}/>
       <Route path="/Signup" element={ <Signup />}/>

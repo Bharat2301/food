@@ -1,43 +1,47 @@
 import React, { useEffect, useState } from 'react';
-import { Container, Nav, Navbar } from 'react-bootstrap';
-import "../../styles/HeaderStyle.css";
-import { Link, useNavigate } from "react-router-dom";
-import Logo from "../../assets/logo/logo.png";
+import { Container, Nav, Navbar, Button } from 'react-bootstrap';
+import { Link, useNavigate } from 'react-router-dom';
+import Logo from '../../assets/logo/logo.png';
 import useCartStore from '../../store/cartStore';
+import '../../styles/HeaderStyle.css';
 
 function Header() {
   const [nav, setNav] = useState(false);
   const navigate = useNavigate();
   const totalItems = useCartStore((state) => state.getTotalItems());
+  const isAuthenticated = !!localStorage.getItem('token');
 
-  // Scroll Navbar
   const changeValueOnScroll = () => {
     const scrollValue = document?.documentElement?.scrollTop;
     setNav(scrollValue > 100);
   };
 
   useEffect(() => {
-    window.addEventListener("scroll", changeValueOnScroll);
-    return () => window.removeEventListener("scroll", changeValueOnScroll);
+    window.addEventListener('scroll', changeValueOnScroll);
+    return () => window.removeEventListener('scroll', changeValueOnScroll);
   }, []);
 
-  // Scroll Handlers
   const handleContactClick = () => {
-    navigate("/", { state: { scrollTo: "contact" } });
+    navigate('/', { state: { scrollTo: 'contact' } });
   };
 
   const handleReviewClick = () => {
-    navigate("/", { state: { scrollTo: "review" } });
+    navigate('/', { state: { scrollTo: 'review' } });
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('userId');
+    navigate('/login');
   };
 
   return (
     <header>
-      <Navbar collapseOnSelect expand="lg" className={`${nav ? "sticky" : ""}`}>
+      <Navbar collapseOnSelect expand="lg" className={`${nav ? 'sticky' : ''}`}>
         <Container>
           <Navbar.Brand as={Link} to="/" className="logo">
-            <img src={Logo} alt="Logo" className="img-fluid" />
+            <img src={Logo} alt="Tasty Burger Logo" className="img-fluid" />
           </Navbar.Brand>
-
           <Navbar.Toggle aria-controls="responsive-navbar-nav" />
           <Navbar.Collapse id="responsive-navbar-nav">
             <Nav className="ms-auto">
@@ -57,6 +61,13 @@ function Header() {
                   {totalItems > 0 && <em className="roundpoint">{totalItems}</em>}
                 </div>
               </Nav.Link>
+              {isAuthenticated ? (
+                <Nav.Link as="button" onClick={handleLogout} className="btn btn-link p-0 nav-link">
+                  Logout
+                </Nav.Link>
+              ) : (
+                <Nav.Link as={Link} to="/login"></Nav.Link>
+              )}
             </Nav>
           </Navbar.Collapse>
         </Container>

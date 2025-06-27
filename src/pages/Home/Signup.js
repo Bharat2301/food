@@ -1,35 +1,90 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Link } from 'react-router-dom';
-import { FaEye, FaEyeSlash } from 'react-icons/fa'; // Icons
-import '../../../src/index.css';
+import { Link, useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import './Signup.css';
+import Burger from '../../assets/hero/hero-2.png';
 
 function Signup() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
 
   const togglePassword = () => setShowPassword((prev) => !prev);
   const toggleConfirmPassword = () => setShowConfirmPassword((prev) => !prev);
 
-  return (
-    <div className="login-root">
-      <motion.div
-        initial={{ opacity: 0, y: -30 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-        className="login-card"
-      >
-        <div className="login-content">
-          <h2 className="login-title">🍔 Create Account</h2>
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError('');
+    
+    if (password !== confirmPassword) {
+      setError('Passwords do not match');
+      return;
+    }
+    
+    setIsLoading(true);
+    
+    try {
+      // Simulate API call
+      setTimeout(() => {
+        console.log('Signup attempted with:', { username, email, password });
+        alert('Signup successful! Check console for details.');
+        setIsLoading(false);
+        navigate('/login');
+      }, 1000);
+      
+      // Actual API call would look like this:
+      /*
+      const response = await axios.post('http://localhost:5000/api/auth/signup', {
+        name: username,
+        email,
+        password,
+      });
+      localStorage.setItem('token', response.data.token);
+      localStorage.setItem('userId', response.data.userId);
+      alert('Signup successful!');
+      navigate('/');
+      */
+    } catch (err) {
+      setError(err.response?.data?.message || 'Signup failed. Please try again.');
+      setIsLoading(false);
+    }
+  };
 
-          <form className="login-form">
+  return (
+    <div className="signup-container">
+      {/* Left Side - Signup Form */}
+      <div className="signup-form-container">
+        <motion.div
+          initial={{ opacity: 0, x: -50 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.6 }}
+          className="signup-form"
+        >
+          <div className="signup-header">
+            <h1>Create Account</h1>
+            <p className="welcome-message">Join us! Create your account to get started</p>
+          </div>
+
+          <form onSubmit={handleSubmit}>
             <div className="form-group">
               <label htmlFor="username">Username</label>
               <input
                 type="text"
                 id="username"
+                name="username"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                className="form-input"
                 placeholder="Enter your username"
                 required
+                disabled={isLoading}
               />
             </div>
 
@@ -38,78 +93,188 @@ function Signup() {
               <input
                 type="email"
                 id="email"
+                name="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="form-input"
                 placeholder="Enter your email"
                 required
+                disabled={isLoading}
               />
             </div>
 
-            <div className="form-group password-group" style={{ position: 'relative' }}>
+            <div className="form-group password-group">
               <label htmlFor="password">Password</label>
-              <input
-                type={showPassword ? 'text' : 'password'}
-                id="password"
-                placeholder="Enter your password"
-                required
-              />
-              <span
-                onClick={togglePassword}
-                style={{
-                  position: 'absolute',
-                  right: '12px',
-                  top: '44px',
-                  cursor: 'pointer',
-                  color: '#666',
-                }}
-              >
-                {showPassword ? <FaEyeSlash /> : <FaEye />}
-              </span>
+              <div className="password-input-container">
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  id="password"
+                  name="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="form-input"
+                  placeholder="Enter your password"
+                  required
+                  disabled={isLoading}
+                />
+                <span className="toggle-password" onClick={togglePassword}>
+                  {showPassword ? '🙈' : '👁️'}
+                </span>
+              </div>
             </div>
 
-            <div className="form-group password-group" style={{ position: 'relative' }}>
-              <label htmlFor="confirm-password">Confirm Password</label>
-              <input
-                type={showConfirmPassword ? 'text' : 'password'}
-                id="confirm-password"
-                placeholder="Confirm your password"
-                required
-              />
-              <span
-                onClick={toggleConfirmPassword}
-                style={{
-                  position: 'absolute',
-                  right: '12px',
-                  top: '44px',
-                  cursor: 'pointer',
-                  color: '#666',
-                }}
-              >
-                {showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
-              </span>
+            <div className="form-group password-group">
+              <label htmlFor="confirmPassword">Confirm Password</label>
+              <div className="password-input-container">
+                <input
+                  type={showConfirmPassword ? 'text' : 'password'}
+                  id="confirmPassword"
+                  name="confirmPassword"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  className="form-input"
+                  placeholder="Confirm your password"
+                  required
+                  disabled={isLoading}
+                />
+                <span className="toggle-password" onClick={toggleConfirmPassword}>
+                  {showConfirmPassword ? '🙈' : '👁️'}
+                </span>
+              </div>
             </div>
+
+            {error && <p className="error-message">{error}</p>}
 
             <motion.button
-              whileHover={{ scale: 1.03 }}
-              whileTap={{ scale: 0.97 }}
+              whileHover={!isLoading ? { scale: 1.02 } : {}}
+              whileTap={!isLoading ? { scale: 0.98 } : {}}
               type="submit"
-              className="login-button"
+              className={`signup-button ${isLoading ? 'loading' : ''}`}
+              disabled={isLoading}
             >
-              🍟 Create Account
+              {isLoading ? 'Creating Account...' : 'Sign Up'}
             </motion.button>
-          </form>
 
-          <div className="login-links">
-            <p>Already have an account?</p>
-            <div className="links-container">
-              <Link to="/" className="auth-link">
-                Login
-              </Link>
-              <Link to="/AdminLogin" className="auth-link">
-                Admin Login
-              </Link>
+            <div className="login-link">
+              Already have an account? <Link to="/login" className="login-link">Log in</Link>
             </div>
-          </div>
+          </form>
+        </motion.div>
+      </div>
+
+      {/* Right Side - Burger Section */}
+      <div className="burger-section">
+        <div className="curved-top-section"></div>
+        <div className="sloped-edge"></div>
+        
+        {/* Decorative Burgers */}
+        <motion.div 
+          className="heart-decoration heart-1"
+          initial={{ opacity: 0, scale: 0 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.5, delay: 0.8 }}
+        >
+          <motion.span
+            animate={{ 
+              y: [0, -10, 0],
+              rotate: [0, 5, -5, 0]
+            }}
+            transition={{ 
+              duration: 3,
+              repeat: Infinity,
+              ease: "easeInOut"
+            }}
+          >
+            🍔
+          </motion.span>
+        </motion.div>
+
+        <motion.div 
+          className="heart-decoration heart-2"
+          initial={{ opacity: 0, scale: 0 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.5, delay: 1.2 }}
+        >
+          <motion.span
+            animate={{ 
+              y: [0, -8, 0],
+              rotate: [0, -3, 3, 0]
+            }}
+            transition={{ 
+              duration: 2.5,
+              repeat: Infinity,
+              ease: "easeInOut",
+              delay: 0.5
+            }}
+          >
+            🍟
+          </motion.span>
+        </motion.div>
+
+        {/* Additional floating burger elements */}
+        <motion.div 
+          className="heart-decoration heart-3"
+          initial={{ opacity: 0, scale: 0 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.5, delay: 1.0 }}
+        >
+          <motion.span
+            animate={{ 
+              y: [0, -12, 0],
+              x: [0, 5, -5, 0]
+            }}
+            transition={{ 
+              duration: 4,
+              repeat: Infinity,
+              ease: "easeInOut",
+              delay: 1
+            }}
+          >
+            🥤
+          </motion.span>
+        </motion.div>
+
+        <div className="burger-title-container">
+          <motion.h2 
+            className="burger-title-line"
+            initial={{ opacity: 0, y: -30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+          >
+            BEST
+          </motion.h2>
+          <motion.h2 
+            className="burger-title-line"
+            initial={{ opacity: 0, y: -30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.4 }}
+          >
+            BURGER
+          </motion.h2>
+          <motion.h2 
+            className="burger-title-line"
+            initial={{ opacity: 0, y: -30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.6 }}
+          >
+            IN TOWN
+          </motion.h2>
         </div>
-      </motion.div>
+        
+        <motion.div 
+          className="burger-image-container"
+          initial={{ opacity: 0, y: 100 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1 }}
+        >
+          <motion.div
+            whileHover={{ scale: 1.05 }}
+            transition={{ duration: 0.3 }}
+          >
+            <img src={Burger} className="burger-image" alt="Delicious Burger" />
+          </motion.div>
+        </motion.div>
+      </div>
     </div>
   );
 }

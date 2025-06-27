@@ -1,0 +1,440 @@
+/* Main Container */
+.admin-login-container {
+    display: flex;
+    height: 100vh;
+    font-family: 'Inter', sans-serif;
+    overflow: hidden;
+}
+
+/* Left Side - Login Form */
+.admin-login-form-container {
+    width: 55%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #ffffff;
+    position: relative;
+}
+
+.admin-login-form {
+    width: 100%;
+    max-width: 380px;
+    padding: 0 40px;
+}
+
+.admin-login-header h1 {
+    font-size: 36px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    color: #000000;
+    text-align: center;
+}
+
+.admin-welcome {
+    color: #666666;
+    margin-bottom: 40px;
+    font-size: 16px;
+    font-weight: 400;
+    text-align: center;
+}
+
+.form-group {
+    margin-bottom: 24px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: #333333;
+    font-size: 14px;
+}
+
+.form-input {
+    width: 100%;
+    padding: 14px 16px;
+    border: 1px solid #E0E0E0;
+    border-radius: 8px;
+    font-size: 14px;
+    transition: border-color 0.3s;
+    background-color: #FAFAFA;
+}
+
+.form-input:focus {
+    outline: none;
+    border-color: #E3000E;
+    background-color: #FFFFFF;
+}
+
+.form-input:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.password-group {
+    position: relative;
+}
+
+.password-input-container {
+    position: relative;
+}
+
+.toggle-password {
+    position: absolute;
+    right: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #666666;
+    font-size: 16px;
+}
+
+.error-message {
+    color: #E3000E;
+    font-size: 14px;
+    margin-top: 5px;
+    text-align: center;
+}
+
+.admin-login-button {
+    width: 100%;
+    padding: 14px;
+    background: #E3000E;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-bottom: 24px;
+}
+
+.admin-login-button:hover:not(:disabled) {
+    background-color: #c0000c;
+    transform: translateY(-1px);
+}
+
+.admin-login-button:active:not(:disabled) {
+    transform: translateY(0);
+}
+
+.admin-login-button:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.admin-login-button.loading {
+    background-color: #c0000c;
+}
+
+.user-options {
+    text-align: center;
+    color: #666666;
+    font-size: 14px;
+}
+
+.user-options a {
+    color: #E3000E;
+    font-weight: 500;
+    text-decoration: none;
+}
+
+.user-options a:hover {
+    text-decoration: underline;
+}
+
+/* Right Side - Burger Section */
+.burger-section {
+    width: 45%;
+    background: #E3000E;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    overflow: hidden;
+    clip-path: polygon(15% 0%, 100% 0%, 100% 100%, 0% 100%);
+}
+
+.curved-top-section {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 35%;
+    background: white;
+    z-index: 1;
+    clip-path: polygon(15% 0%, 100% 0%, 100% 100%, 0% 100%);
+}
+
+.curved-top-section::after {
+    content: '';
+    position: absolute;
+    bottom: -50px;
+    left: 0;
+    right: 0;
+    height: 100px;
+    background: white;
+    border-radius: 0 0 50% 50%;
+    transform: scaleX(1.5);
+}
+
+.sloped-edge {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #E3000E;
+    z-index: 0;
+}
+
+.burger-title-container {
+    position: absolute;
+    top: 9%;
+    left: 50%;
+    transform: translateX(-24%);
+    transform: rotate(340deg);
+    text-align: center;
+    z-index: 2;
+}
+
+.burger-title-line {
+    font-size: 48px;
+    font-weight: 900;
+    color: #000000;
+    line-height: 0.85;
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.burger-title-line:nth-child(2) {
+    color: transparent;
+    -webkit-text-stroke: 2px #000000;
+    text-shadow: 2px #000000;
+}
+
+.burger-image-container {
+    position: absolute;
+    bottom: 15%;
+    left: 30%;
+    transform: translateX(-50%);
+    z-index: 3;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.burger-image {
+    width: 100%;
+    max-width: 500px;
+    height: auto;
+    max-height: 350px;
+    object-fit: contain;
+    filter: drop-shadow(0px 20px 40px rgba(255, 255, 255, 0.6)) 
+            drop-shadow(0px 10px 25px rgba(255, 255, 255, 0.4))
+            drop-shadow(0px 5px 15px rgba(255, 255, 255, 0.3));
+    transition: transform 0.3s ease;
+}
+
+.burger-image:hover {
+    transform: scale(1.05);
+    filter: drop-shadow(0px 25px 50px rgba(255, 255, 255, 0.7)) 
+            drop-shadow(0px 15px 30px rgba(255, 255, 255, 0.5))
+            drop-shadow(0px 8px 20px rgba(255, 255, 255, 0.4));
+}
+
+/* Decorative hearts */
+.heart-decoration {
+    position: absolute;
+    z-index: 2;
+    font-size: 22px;
+}
+
+.heart-1 {
+    top: 25%;
+    right: 12%;
+    font-size: 24px;
+}
+
+.heart-2 {
+    top: 18%;
+    right: 22%;
+    font-size: 22px;
+}
+
+.heart-3 {
+    top: 32%;
+    right: 6%;
+    font-size: 24px;
+}
+
+/* Additional floating hearts for more visual interest */
+.heart-decoration span {
+    display: inline-block;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+    .burger-title-line {
+        font-size: 36px;
+        margin-bottom: 5px;
+    }
+    .burger-image {
+        max-width: 400px;
+        max-height: 300px;
+        filter: drop-shadow(0px 15px 30px rgba(255, 255, 255, 0.5)) 
+                drop-shadow(0px 8px 20px rgba(255, 255, 255, 0.3))
+                drop-shadow(0px 4px 12px rgba(255, 255, 255, 0.2));
+    }
+
+    .burger-image:hover {
+        filter: drop-shadow(0px 20px 40px rgba(255, 255, 255, 0.6)) 
+                drop-shadow(0px 12px 25px rgba(255, 255, 255, 0.4))
+                drop-shadow(0px 6px 15px rgba(255, 255, 255, 0.3));
+    }
+
+    .burger-title-line {
+        font-size: 36px;
+        margin-bottom: 5px;
+    }
+
+    .curved-top-section {
+        height: 30%;
+    }
+    
+    .heart-1 {
+        font-size: 24px;
+        right: 12%;
+    }
+    
+    .heart-2 {
+        font-size: 18px;
+        right: 20%;
+    }
+    
+    .heart-3 {
+        font-size: 20px;
+        right: 6%;
+    }
+}
+
+@media (max-width: 768px) {
+    .admin-login-container {
+        flex-direction: column;
+    }
+
+    .admin-login-form-container,
+    .burger-section {
+        width: 100%;
+    }
+
+    .burger-section {
+        height: 400px;
+        clip-path: none;
+    }
+
+    .curved-top-section {
+        clip-path: none;
+    }
+
+    .admin-login-form {
+        padding: 30px;
+    }
+
+    .admin-login-header h1 {
+        font-size: 28px;
+    }
+
+    .burger-title-container {
+        top: 10%;
+    }
+
+    .burger-title-line {
+        font-size: 28px;
+    }
+
+    .burger-image {
+        max-width: 300px;
+        max-height: 250px;
+        filter: drop-shadow(0px 12px 25px rgba(255, 255, 255, 0.4)) 
+                drop-shadow(0px 6px 15px rgba(255, 255, 255, 0.3))
+                drop-shadow(0px 3px 10px rgba(255, 255, 255, 0.2));
+    }
+
+    .burger-image:hover {
+        filter: drop-shadow(0px 15px 30px rgba(255, 255, 255, 0.5)) 
+                drop-shadow(0px 8px 20px rgba(255, 255, 255, 0.4))
+                drop-shadow(0px 4px 12px rgba(255, 255, 255, 0.3));
+    }
+
+    .curved-top-section {
+        height: 25%;
+    }
+    
+    .heart-1 {
+        top: 15%;
+        right: 10%;
+        font-size: 20px;
+    }
+    
+    .heart-2 {
+        top: 10%;
+        right: 18%;
+        font-size: 16px;
+    }
+    
+    .heart-3 {
+        top: 22%;
+        right: 5%;
+        font-size: 18px;
+    }
+}
+
+@media (max-width: 480px) {
+    .burger-title-line {
+        font-size: 24px;
+    }
+    
+    .burger-image {
+        max-width: 220px;
+        max-height: 200px;
+        filter: drop-shadow(0px 10px 20px rgba(255, 255, 255, 0.4)) 
+                drop-shadow(0px 5px 12px rgba(255, 255, 255, 0.3))
+                drop-shadow(0px 2px 8px rgba(255, 255, 255, 0.2));
+    }
+
+    .burger-image:hover {
+        filter: drop-shadow(0px 12px 25px rgba(255, 255, 255, 0.5)) 
+                drop-shadow(0px 6px 15px rgba(255, 255, 255, 0.4))
+                drop-shadow(0px 3px 10px rgba(255, 255, 255, 0.3));
+    }
+
+    .admin-login-form {
+        padding: 20px;
+    }
+
+    .burger-section {
+        height: 350px;
+    }
+    
+    .heart-decoration {
+        font-size: 16px;
+    }
+    
+    .heart-1 {
+        font-size: 18px;
+    }
+    
+    .heart-2 {
+        font-size: 14px;
+    }
+    
+    .heart-3 {
+        font-size: 16px;
+    }
+}

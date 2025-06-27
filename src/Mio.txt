@@ -1,5 +1,4 @@
-i have food folder in that i have src folder in that i have assets folder in that i have images
-then i have components\Layouts folder in that i have Cards.js file
+i have food folder in that i have src folder in that i have assets folder in that i have images then i have components\Layouts folder in that i have Cards.js file
 import React, { useState } from 'react';
 import { Col, Card } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
@@ -540,15 +539,37 @@ export default AboutPage;
 then i have AdminLogin.js file
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
+import axios from 'axios';
 import '../../../src/index.css';
 
 function AdminLogin() {
   const [showPassword, setShowPassword] = useState(false);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const navigate = useNavigate();
 
   const togglePassword = () => {
     setShowPassword((prev) => !prev);
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError('');
+    try {
+      const response = await axios.post('http://localhost:5000/api/auth/admin-login', {
+        email,
+        password,
+      });
+      localStorage.setItem('token', response.data.token);
+      localStorage.setItem('userId', response.data.userId); // Store userId
+      alert('Admin login successful!');
+      navigate('/admin'); // Redirect to an admin dashboard (you'll need to create this)
+    } catch (err) {
+      setError(err.response?.data?.message || 'Admin login failed. Please try again.');
+    }
   };
 
   return (
@@ -561,24 +582,27 @@ function AdminLogin() {
       >
         <div className="login-content">
           <h2 className="login-title">🍔 Admin Login</h2>
-
-          <form className="login-form">
+          {error && <p className="text-danger">{error}</p>}
+          <form className="login-form" onSubmit={handleSubmit}>
             <div className="form-group">
               <label htmlFor="email">Admin Email</label>
               <input
                 type="email"
                 id="email"
                 placeholder="Enter admin email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 required
               />
             </div>
-
             <div className="form-group password-group" style={{ position: 'relative' }}>
               <label htmlFor="password">Admin Password</label>
               <input
                 type={showPassword ? 'text' : 'password'}
                 id="password"
                 placeholder="Enter admin password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
                 required
               />
               <span
@@ -594,7 +618,6 @@ function AdminLogin() {
                 {showPassword ? <FaEyeSlash /> : <FaEye />}
               </span>
             </div>
-
             <motion.button
               whileHover={{ scale: 1.03 }}
               whileTap={{ scale: 0.97 }}
@@ -604,7 +627,6 @@ function AdminLogin() {
               🍟 Admin Sign In
             </motion.button>
           </form>
-
           <div className="login-links">
             <p>Not an admin?</p>
             <div className="links-container">
@@ -623,7 +645,6 @@ function AdminLogin() {
 }
 
 export default AdminLogin;
-
 then i have Blog.js file
 import React from "react";
 import PropTypes from "prop-types";
@@ -1125,8 +1146,8 @@ const BlogPage = () => {
 
 export default BlogPage;
 then i have Cart.js file
-import React, { useEffect } from 'react';
-import { Container,  Table, Button, Form } from 'react-bootstrap';
+import React, { useEffect, useState } from 'react';
+import { Container, Table, Button, Form, Spinner, Alert } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import useCartStore from '../../store/cartStore';
 import axios from 'axios';
@@ -1142,11 +1163,39 @@ function Cart() {
     clearCart,
   } = useCartStore();
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [user, setUser] = useState(null);
 
-  // Fetch cart items when component mounts
+  // Fetch cart items and user profile when component mounts
   useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      navigate('/login');
+      return;
+    }
+
+    // Fetch user profile
+    const fetchUserProfile = async () => {
+      try {
+        const response = await axios.get('http://localhost:5000/api/auth/profile', {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setUser(response.data);
+      } catch (err) {
+        if (err.response?.status === 401 || err.response?.status === 403) {
+          localStorage.removeItem('token');
+          localStorage.removeItem('userId');
+          navigate('/login');
+        } else {
+          setError('Failed to fetch user profile');
+        }
+      }
+    };
+
+    fetchUserProfile();
     fetchCartItems();
-  }, [fetchCartItems]);
+  }, [fetchCartItems, navigate]);
 
   // Load Razorpay script
   useEffect(() => {
@@ -1160,18 +1209,38 @@ function Cart() {
   }, []);
 
   const handleCheckout = async () => {
-    const totalAmount = getTotalAmount() * 100; // Razorpay expects amount in paise
+    setLoading(true);
+    setError(null);
+    const token = localStorage.getItem('token');
+    if (!token) {
+      setLoading(false);
+      navigate('/login');
+      return;
+    }
 
     try {
+      // Fetch Razorpay key
+      const keyResponse = await axios.get('http://localhost:5000/api/razorpay-key');
+      const razorpayKey = keyResponse.data.keyId;
+
+      // Calculate total amount in paise
+      const totalAmount = getTotalAmount() * 100;
+      if (totalAmount <= 0) {
+        setError('Cart total is invalid');
+        setLoading(false);
+        return;
+      }
+
       // Create order on backend
       const orderResponse = await axios.post(
         'http://localhost:5000/api/create-order',
         {
-          userId: useCartStore.getState().userId,
           amount: totalAmount,
           currency: 'INR',
           receipt: `receipt_${Date.now()}`,
-          items: cartItems, // Include cart items
+        },
+        {
+          headers: { Authorization: `Bearer ${token}` },
         }
       );
 
@@ -1179,7 +1248,7 @@ function Cart() {
 
       // Initialize Razorpay
       const options = {
-        key: 'rzp_test_UiTkSmK6mjclhU', // Your Razorpay Key ID
+        key: razorpayKey,
         amount: amount,
         currency: currency,
         name: 'Tasty Burger',
@@ -1187,24 +1256,46 @@ function Cart() {
         image: '/assets/logo/logo.png',
         order_id: order_id,
         handler: async function (response) {
-          // Save order to MongoDB
-          await axios.post('http://localhost:5000/api/save-order', {
-            userId: useCartStore.getState().userId,
-            items: cartItems,
-            totalAmount: getTotalAmount(),
-            paymentId: response.razorpay_payment_id,
-            orderId: order_id,
-            currency,
-          });
-          // Clear cart after successful payment
-          await clearCart();
-          alert('Payment Successful! Payment ID: ' + response.razorpay_payment_id);
-          navigate('/');
+          try {
+            // Save order to MongoDB
+            await axios.post(
+              'http://localhost:5000/api/save-order',
+              {
+                items: cartItems.map(item => ({
+                  menuItemId: item._id, // Use MongoDB _id from MenuItem
+                  quantity: item.quantity,
+                })),
+                totalAmount: getTotalAmount(),
+                paymentId: response.razorpay_payment_id,
+                orderId: order_id,
+                currency,
+              },
+              {
+                headers: { Authorization: `Bearer ${token}` },
+              }
+            );
+            // Clear cart after successful payment
+            await clearCart();
+            alert(`Payment Successful! Payment ID: ${response.razorpay_payment_id}`);
+            navigate('/');
+          } catch (err) {
+            setError(
+              err.response?.data?.error ||
+                'Failed to save order. Please try again.'
+            );
+            if (err.response?.status === 401 || err.response?.status === 403) {
+              localStorage.removeItem('token');
+              localStorage.removeItem('userId');
+              navigate('/login');
+            }
+          } finally {
+            setLoading(false);
+          }
         },
         prefill: {
-          name: 'Customer Name',
-          email: 'customer@example.com',
-          contact: '9998887777',
+          name: user?.name || 'Customer Name',
+          email: user?.email || 'customer@example.com',
+          contact: user?.contact || '9998887777', // Add contact to User schema if needed
         },
         theme: {
           color: '#dc3545',
@@ -1212,16 +1303,42 @@ function Cart() {
       };
 
       const rzp = new window.Razorpay(options);
+      rzp.on('payment.failed', function () {
+        setError('Payment failed. Please try again.');
+        setLoading(false);
+      });
       rzp.open();
-    } catch (error) {
-      console.error('Error creating order:', error);
-      alert('Failed to initiate payment. Please try again.');
+    } catch (err) {
+      setError(
+        err.response?.data?.error ||
+          'Failed to initiate payment. Please try again.'
+      );
+      if (err.response?.status === 401 || err.response?.status === 403) {
+        localStorage.removeItem('token');
+        localStorage.removeItem('userId');
+        navigate('/login');
+      }
+      setLoading(false);
     }
+  };
+
+  const handleQuantityChange = (id, value) => {
+    const quantity = parseInt(value);
+    if (isNaN(quantity) || quantity < 1) {
+      setError('Quantity must be at least 1');
+      return;
+    }
+    updateQuantity(id, quantity);
   };
 
   if (cartItems.length === 0) {
     return (
-      <Container className="cart-empty">
+      <Container className="cart-empty text-center my-5">
+        <img
+          src="/assets/images/empty-cart.png"
+          alt="Empty Cart"
+          style={{ width: '150px', marginBottom: '20px' }}
+        />
         <h2>Your Cart is Empty</h2>
         <p>
           Your shopping cart is currently empty. Start adding items to your cart
@@ -1235,8 +1352,13 @@ function Cart() {
   }
 
   return (
-    <Container className="cart-container">
+    <Container className="cart-container my-5">
       <h2>My Cart</h2>
+      {error && (
+        <Alert variant="danger" onClose={() => setError(null)} dismissible>
+          {error}
+        </Alert>
+      )}
       <Table striped bordered hover responsive>
         <thead>
           <tr>
@@ -1265,9 +1387,7 @@ function Cart() {
                   type="number"
                   min="1"
                   value={item.quantity}
-                  onChange={(e) =>
-                    updateQuantity(item.id, parseInt(e.target.value))
-                  }
+                  onChange={(e) => handleQuantityChange(item.id, e.target.value)}
                   style={{ width: '80px' }}
                 />
               </td>
@@ -1277,6 +1397,7 @@ function Cart() {
                   variant="danger"
                   size="sm"
                   onClick={() => removeItem(item.id)}
+                  disabled={loading}
                 >
                   Remove
                 </Button>
@@ -1292,11 +1413,29 @@ function Cart() {
             variant="primary"
             onClick={() => navigate('/menu')}
             className="me-2"
+            disabled={loading}
           >
             Add More
           </Button>
-          <Button variant="success" onClick={handleCheckout}>
-            Proceed to Checkout
+          <Button
+            variant="success"
+            onClick={handleCheckout}
+            disabled={loading || cartItems.length === 0}
+          >
+            {loading ? (
+              <>
+                <Spinner
+                  as="span"
+                  animation="border"
+                  size="sm"
+                  role="status"
+                  aria-hidden="true"
+                />
+                {' '}Processing...
+              </>
+            ) : (
+              'Proceed to Checkout'
+            )}
           </Button>
         </div>
       </div>
@@ -1306,18 +1445,43 @@ function Cart() {
 
 export default Cart;
 then i have Contact.js file
-import React from 'react'
+import React from 'react';
+import { Container, Form, Button } from 'react-bootstrap';
+import Layout from '../../components/Layouts/Layout';
 
 function Contact() {
   return (
-    <div>
-      Contact Us Page
-      <p>We would love to hear from you! Whether you have questions, feedback,  or just want to say hello, feel free to reach out to us. You can contact us via email at </p>
-    </div>
-  )
+    <Layout>
+      <Container className="py-5">
+        <h2>Contact Us</h2>
+        <p>We would love to hear from you! Whether you have questions, feedback, or just want to say hello, feel free to reach out.</p>
+        <Form>
+          <Form.Group className="mb-3" controlId="formName">
+            <Form.Label>Name</Form.Label>
+            <Form.Control type="text" placeholder="Enter your name" />
+          </Form.Group>
+          <Form.Group className="mb-3" controlId="formEmail">
+            <Form.Label>Email</Form.Label>
+            <Form.Control type="email" placeholder="Enter your email" />
+          </Form.Group>
+          <Form.Group className="mb-3" controlId="formMessage">
+            <Form.Label>Message</Form.Label>
+            <Form.Control as="textarea" rows={4} placeholder="Your message" />
+          </Form.Group>
+          <Button variant="primary" type="submit">
+            Send Message
+          </Button>
+        </Form>
+        <div className="mt-4">
+          <p>Email: info@tastyburger.com</p>
+          <p>Phone: 999-888-7777</p>
+        </div>
+      </Container>
+    </Layout>
+  );
 }
 
-export default Contact
+export default Contact;
 then i have Home.js file
 import React, { useEffect, useRef } from "react";
 import Layout from '../../components/Layouts/Layout';
@@ -1383,15 +1547,37 @@ export default Home;
 then i have Login.js file
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Link } from 'react-router-dom';
-import { FaEye, FaEyeSlash } from 'react-icons/fa'; // Eye icons
+import { Link, useNavigate } from 'react-router-dom';
+import { FaEye, FaEyeSlash } from 'react-icons/fa';
+import axios from 'axios';
 import '../../../src/index.css';
 
 function Login() {
   const [showPassword, setShowPassword] = useState(false);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const navigate = useNavigate();
 
   const togglePassword = () => {
     setShowPassword((prev) => !prev);
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError('');
+    try {
+      const response = await axios.post('http://localhost:5000/api/auth/login', {
+        email,
+        password,
+      });
+      localStorage.setItem('token', response.data.token);
+      localStorage.setItem('userId', response.data.userId); // Store userId
+      alert('Login successful!');
+      navigate('/');
+    } catch (err) {
+      setError(err.response?.data?.message || 'Login failed. Please try again.');
+    }
   };
 
   return (
@@ -1404,19 +1590,28 @@ function Login() {
       >
         <div className="login-content">
           <h2 className="login-title">🍔 Burger Login</h2>
-
-          <form className="login-form">
+          {error && <p className="text-danger">{error}</p>}
+          <form className="login-form" onSubmit={handleSubmit}>
             <div className="form-group">
               <label htmlFor="email">Email</label>
-              <input type="email" id="email" placeholder="Enter your email" />
+              <input
+                type="email"
+                id="email"
+                placeholder="Enter your email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+              />
             </div>
-
             <div className="form-group password-group" style={{ position: 'relative' }}>
               <label htmlFor="password">Password</label>
               <input
                 type={showPassword ? 'text' : 'password'}
                 id="password"
                 placeholder="Enter your password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
               />
               <span
                 onClick={togglePassword}
@@ -1431,7 +1626,6 @@ function Login() {
                 {showPassword ? <FaEyeSlash /> : <FaEye />}
               </span>
             </div>
-
             <motion.button
               whileHover={{ scale: 1.03 }}
               whileTap={{ scale: 0.97 }}
@@ -1441,7 +1635,6 @@ function Login() {
               🍟 Sign In
             </motion.button>
           </form>
-
           <div className="login-links">
             <p>Don't have an account?</p>
             <div className="links-container">
@@ -1460,7 +1653,6 @@ function Login() {
 }
 
 export default Login;
-
 then i have Menu.js file
 import React, { useEffect, useState } from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
@@ -1560,6 +1752,16 @@ function Menu() {
 }
 
 export default Menu;
+then i have ProtectedRoute.js file
+import React from 'react';
+import { Navigate } from 'react-router-dom';
+
+function ProtectedRoute({ children }) {
+  const isAuthenticated = !!localStorage.getItem('token');
+  return isAuthenticated ? children : <Navigate to="/login" />;
+}
+
+export default ProtectedRoute;
 then i have Review.js file
 import React from 'react'
 
@@ -2047,7 +2249,7 @@ function Section6() {
 }
 
 export default Section6;
-then i have Section7.js file 
+then i have Section7.js file
 import React from "react";
 import { Container, Row, Col } from "react-bootstrap";
 import { Link } from "react-router-dom";
@@ -2078,16 +2280,45 @@ export default Section7;
 then i have Signup.js file
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Link } from 'react-router-dom';
-import { FaEye, FaEyeSlash } from 'react-icons/fa'; // Icons
+import { Link, useNavigate } from 'react-router-dom';
+import { FaEye, FaEyeSlash } from 'react-icons/fa';
+import axios from 'axios';
 import '../../../src/index.css';
 
 function Signup() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [error, setError] = useState('');
+  const navigate = useNavigate();
 
   const togglePassword = () => setShowPassword((prev) => !prev);
   const toggleConfirmPassword = () => setShowConfirmPassword((prev) => !prev);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError('');
+    if (password !== confirmPassword) {
+      setError('Passwords do not match');
+      return;
+    }
+    try {
+      const response = await axios.post('http://localhost:5000/api/auth/signup', {
+        name: username,
+        email,
+        password,
+      });
+      localStorage.setItem('token', response.data.token);
+      localStorage.setItem('userId', response.data.userId); // Store userId
+      alert('Signup successful!');
+      navigate('/');
+    } catch (err) {
+      setError(err.response?.data?.message || 'Signup failed. Please try again.');
+    }
+  };
 
   return (
     <div className="login-root">
@@ -2099,34 +2330,38 @@ function Signup() {
       >
         <div className="login-content">
           <h2 className="login-title">🍔 Create Account</h2>
-
-          <form className="login-form">
+          {error && <p className="text-danger">{error}</p>}
+          <form className="login-form" onSubmit={handleSubmit}>
             <div className="form-group">
               <label htmlFor="username">Username</label>
               <input
                 type="text"
                 id="username"
                 placeholder="Enter your username"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
                 required
               />
             </div>
-
             <div className="form-group">
               <label htmlFor="email">Email</label>
               <input
                 type="email"
                 id="email"
                 placeholder="Enter your email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 required
               />
             </div>
-
             <div className="form-group password-group" style={{ position: 'relative' }}>
               <label htmlFor="password">Password</label>
               <input
                 type={showPassword ? 'text' : 'password'}
                 id="password"
                 placeholder="Enter your password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
                 required
               />
               <span
@@ -2142,13 +2377,14 @@ function Signup() {
                 {showPassword ? <FaEyeSlash /> : <FaEye />}
               </span>
             </div>
-
             <div className="form-group password-group" style={{ position: 'relative' }}>
               <label htmlFor="confirm-password">Confirm Password</label>
               <input
                 type={showConfirmPassword ? 'text' : 'password'}
                 id="confirm-password"
                 placeholder="Confirm your password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
                 required
               />
               <span
@@ -2164,7 +2400,6 @@ function Signup() {
                 {showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
               </span>
             </div>
-
             <motion.button
               whileHover={{ scale: 1.03 }}
               whileTap={{ scale: 0.97 }}
@@ -2174,7 +2409,6 @@ function Signup() {
               🍟 Create Account
             </motion.button>
           </form>
-
           <div className="login-links">
             <p>Already have an account?</p>
             <div className="links-container">
@@ -2193,69 +2427,66 @@ function Signup() {
 }
 
 export default Signup;
-
 then i have store folder in that i have cartStore.js file
 import { create } from 'zustand';
 import axios from 'axios';
 
-// Helper to get or generate userId
-const getUserId = () => {
-  let userId = localStorage.getItem('userId');
-  if (!userId) {
-    userId = Math.random().toString(36).substring(2, 15); // Simple random ID (replace with UUID if preferred)
-    localStorage.setItem('userId', userId);
-  }
-  return userId;
-};
-
 const useCartStore = create((set, get) => ({
   cartItems: [],
-  userId: getUserId(),
-
-  // Fetch cart items from backend
   fetchCartItems: async () => {
+    const token = localStorage.getItem('token');
+    if (!token) return;
     try {
-      const response = await axios.get(`http://localhost:5000/api/cart/${get().userId}`);
+      const response = await axios.get('http://localhost:5000/api/cart', {
+        headers: { Authorization: `Bearer ${token}` },
+      });
       set({ cartItems: response.data });
     } catch (error) {
       console.error('Error fetching cart items:', error);
+      if (error.response?.status === 401 || error.response?.status === 403) {
+        localStorage.removeItem('token');
+        localStorage.removeItem('userId');
+        window.location.href = '/login';
+      }
     }
   },
-
-  // Add item to cart
-  addItem: async (item) => {
+  addItem: async (menuItemId, quantity = 1) => {
+    const token = localStorage.getItem('token');
+    const userId = localStorage.getItem('userId');
+    if (!token || !userId) {
+      window.location.href = '/login';
+      return;
+    }
     try {
-      const response = await axios.post('http://localhost:5000/api/cart', {
-        userId: get().userId,
-        item,
-      });
+      const response = await axios.post(
+        'http://localhost:5000/api/cart',
+        { menuItemId, quantity },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
       set((state) => ({
-        cartItems: state.cartItems.some((i) => i.id === item.id)
-          ? state.cartItems.map((i) =>
-              i.id === item.id ? { ...i, quantity: i.quantity + 1 } : i
-            )
-          : [...state.cartItems, { ...response.data, quantity: response.data.quantity || 1 }],
+        cartItems: [...state.cartItems.filter((item) => item.id !== response.data.id), response.data],
       }));
     } catch (error) {
       console.error('Error adding item to cart:', error);
     }
   },
-
-  // Update item quantity
   updateQuantity: async (id, quantity) => {
+    const token = localStorage.getItem('token');
+    if (!token) return;
     try {
-      await axios.put(`http://localhost:5000/api/cart/${id}`, {
-        userId: get().userId,
-        quantity,
-      });
-      if (quantity < 1) {
+      const response = await axios.put(
+        `http://localhost:5000/api/cart/${id}`,
+        { quantity },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      if (response.data.message === 'Item removed') {
         set((state) => ({
           cartItems: state.cartItems.filter((item) => item.id !== id),
         }));
       } else {
         set((state) => ({
           cartItems: state.cartItems.map((item) =>
-            item.id === id ? { ...item, quantity } : item
+            item.id === id ? response.data : item
           ),
         }));
       }
@@ -2263,42 +2494,37 @@ const useCartStore = create((set, get) => ({
       console.error('Error updating item quantity:', error);
     }
   },
-
-  // Remove item from cart
   removeItem: async (id) => {
+    const token = localStorage.getItem('token');
+    if (!token) return;
     try {
       await axios.delete(`http://localhost:5000/api/cart/${id}`, {
-        data: { userId: get().userId },
+        headers: { Authorization: `Bearer ${token}` },
       });
       set((state) => ({
         cartItems: state.cartItems.filter((item) => item.id !== id),
       }));
     } catch (error) {
-      console.error('Error removing item from cart:', error);
+      console.error('Error removing item:', error);
     }
   },
-
-  // Clear cart
   clearCart: async () => {
+    const token = localStorage.getItem('token');
+    if (!token) return;
     try {
-      await axios.delete(`http://localhost:5000/api/cart/clear/${get().userId}`);
+      await axios.delete('http://localhost:5000/api/cart/clear', {
+        headers: { Authorization: `Bearer ${token}` },
+      });
       set({ cartItems: [] });
     } catch (error) {
       console.error('Error clearing cart:', error);
     }
   },
-
-  // Get total items
-  getTotalItems: () => {
-    return get().cartItems.reduce((total, item) => total + item.quantity, 0);
-  },
-
-  // Get total amount
   getTotalAmount: () => {
-    return get().cartItems.reduce(
-      (total, item) => total + item.price * item.quantity,
-      0
-    );
+    return get().cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  },
+  getTotalItems: () => {
+    return get().cartItems.reduce((sum, item) => sum + item.quantity, 0);
   },
 }));
 
@@ -2930,6 +3156,7 @@ import Footer from "./components/Layouts/Footer";
 import Login from "./pages/Home/Login";
 import AdminLogin from "./pages/Home/AdminLogin";
 import Signup from "./pages/Home/Signup";
+import ProtectedRoute from "./pages/Home/ProtectedRoute";
 
 
 function App(){
@@ -2941,7 +3168,7 @@ function App(){
       <Route path="/menu" element={ <Menu />}/>
       
       <Route path="/blog" element={ <Blog />}/>
-      <Route path="/Cart" element={ <Cart />}/>
+      <Route path="/Cart" element={ <ProtectedRoute><Cart/></ProtectedRoute>}/>
       <Route path="/Footer" element={ <Footer />}/>
       <Route path="/Login" element={ <Login />}/>
       <Route path="/Signup" element={ <Signup />}/>

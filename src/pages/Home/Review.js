@@ -1,11 +1,13 @@
-import React from 'react'
+import React from 'react';
+import Section6 from './Section6';
+import Layout from '../../components/Layouts/Layout';
 
-function Shop() {
+function Review() {
   return (
-    <div>
-      Shop Page
-    </div>
-  )
+    <Layout>
+      <Section6 />
+    </Layout>
+  );
 }
 
-export default Shop
+export default Review;

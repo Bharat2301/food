@@ -1,83 +1,234 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Link } from 'react-router-dom';
-import { FaEye, FaEyeSlash } from 'react-icons/fa';
-import '../../../src/index.css';
+import { Link, useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import './AdminLogin.css';
+import Burger from '../../assets/hero/hero-2.png';
 
 function AdminLogin() {
   const [showPassword, setShowPassword] = useState(false);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
 
-  const togglePassword = () => {
-    setShowPassword((prev) => !prev);
+  const togglePassword = () => setShowPassword((prev) => !prev);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError('');
+    setIsLoading(true);
+    
+    try {
+      // Simulate API call
+      setTimeout(() => {
+        console.log('Admin login attempted with:', { email, password });
+        alert('Admin login successful! Check console for details.');
+        setIsLoading(false);
+        navigate('/admin');
+      }, 1000);
+      
+      // Actual API call would look like this:
+      /*
+      const response = await axios.post('http://localhost:5000/api/auth/admin-login', {
+        email,
+        password,
+      });
+      localStorage.setItem('token', response.data.token);
+      localStorage.setItem('userId', response.data.userId);
+      alert('Admin login successful!');
+      navigate('/admin');
+      */
+    } catch (err) {
+      setError(err.response?.data?.message || 'Admin login failed. Please try again.');
+      setIsLoading(false);
+    }
   };
 
   return (
-    <div className="login-root">
-      <motion.div
-        initial={{ opacity: 0, y: -30 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-        className="login-card"
-      >
-        <div className="login-content">
-          <h2 className="login-title">🍔 Admin Login</h2>
+    <div className="admin-login-container">
+      {/* Left Side - Login Form */}
+      <div className="admin-login-form-container">
+        <motion.div
+          initial={{ opacity: 0, x: -50 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.6 }}
+          className="admin-login-form"
+        >
+          <div className="admin-login-header">
+            <h1>Admin Login</h1>
+            <p className="admin-welcome">Restricted access - authorized personnel only</p>
+          </div>
 
-          <form className="login-form">
+          <form onSubmit={handleSubmit}>
             <div className="form-group">
               <label htmlFor="email">Admin Email</label>
               <input
                 type="email"
                 id="email"
+                name="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="form-input"
                 placeholder="Enter admin email"
                 required
+                disabled={isLoading}
               />
             </div>
 
-            <div className="form-group password-group" style={{ position: 'relative' }}>
+            <div className="form-group password-group">
               <label htmlFor="password">Admin Password</label>
-              <input
-                type={showPassword ? 'text' : 'password'}
-                id="password"
-                placeholder="Enter admin password"
-                required
-              />
-              <span
-                onClick={togglePassword}
-                style={{
-                  position: 'absolute',
-                  right: '12px',
-                  top: '44px',
-                  cursor: 'pointer',
-                  color: '#666',
-                }}
-              >
-                {showPassword ? <FaEyeSlash /> : <FaEye />}
-              </span>
+              <div className="password-input-container">
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  id="password"
+                  name="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="form-input"
+                  placeholder="Enter admin password"
+                  required
+                  disabled={isLoading}
+                />
+                <span className="toggle-password" onClick={togglePassword}>
+                  {showPassword ? '🙈' : '👁️'}
+                </span>
+              </div>
             </div>
+
+            {error && <p className="error-message">{error}</p>}
 
             <motion.button
-              whileHover={{ scale: 1.03 }}
-              whileTap={{ scale: 0.97 }}
+              whileHover={!isLoading ? { scale: 1.02 } : {}}
+              whileTap={!isLoading ? { scale: 0.98 } : {}}
               type="submit"
-              className="login-button"
+              className={`admin-login-button ${isLoading ? 'loading' : ''}`}
+              disabled={isLoading}
             >
-              🍟 Admin Sign In
+              {isLoading ? 'Signing In...' : 'Admin Login'}
             </motion.button>
-          </form>
 
-          <div className="login-links">
-            <p>Not an admin?</p>
-            <div className="links-container">
-              <Link to="/" className="auth-link">
-                User Login
-              </Link>
-              <Link to="/signup" className="auth-link">
-                Sign Up
-              </Link>
+            <div className="user-options">
+              Not an admin? <Link to="/login">User Login</Link> or <Link to="/signup">Sign Up</Link>
             </div>
-          </div>
+          </form>
+        </motion.div>
+      </div>
+
+      {/* Right Side - Burger Section */}
+      <div className="burger-section">
+        <div className="curved-top-section"></div>
+        <div className="sloped-edge"></div>
+        
+        {/* Decorative Burgers */}
+        <motion.div 
+          className="heart-decoration heart-1"
+          initial={{ opacity: 0, scale: 0 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.5, delay: 0.8 }}
+        >
+          <motion.span
+            animate={{ 
+              y: [0, -10, 0],
+              rotate: [0, 5, -5, 0]
+            }}
+            transition={{ 
+              duration: 3,
+              repeat: Infinity,
+              ease: "easeInOut"
+            }}
+          >
+            🍔
+          </motion.span>
+        </motion.div>
+
+        <motion.div 
+          className="heart-decoration heart-2"
+          initial={{ opacity: 0, scale: 0 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.5, delay: 1.2 }}
+        >
+          <motion.span
+            animate={{ 
+              y: [0, -8, 0],
+              rotate: [0, -3, 3, 0]
+            }}
+            transition={{ 
+              duration: 2.5,
+              repeat: Infinity,
+              ease: "easeInOut",
+              delay: 0.5
+            }}
+          >
+            🍟
+          </motion.span>
+        </motion.div>
+
+        {/* Additional floating burger elements */}
+        <motion.div 
+          className="heart-decoration heart-3"
+          initial={{ opacity: 0, scale: 0 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.5, delay: 1.0 }}
+        >
+          <motion.span
+            animate={{ 
+              y: [0, -12, 0],
+              x: [0, 5, -5, 0]
+            }}
+            transition={{ 
+              duration: 4,
+              repeat: Infinity,
+              ease: "easeInOut",
+              delay: 1
+            }}
+          >
+            🥤
+          </motion.span>
+        </motion.div>
+
+        <div className="burger-title-container">
+          <motion.h2 
+            className="burger-title-line"
+            initial={{ opacity: 0, y: -30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+          >
+            ADMIN
+          </motion.h2>
+          <motion.h2 
+            className="burger-title-line"
+            initial={{ opacity: 0, y: -30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.4 }}
+          >
+            ACCESS
+          </motion.h2>
+          <motion.h2 
+            className="burger-title-line"
+            initial={{ opacity: 0, y: -30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.6 }}
+          >
+            ONLY
+          </motion.h2>
         </div>
-      </motion.div>
+        
+        <motion.div 
+          className="burger-image-container"
+          initial={{ opacity: 0, y: 100 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1 }}
+        >
+          <motion.div
+            whileHover={{ scale: 1.05 }}
+            transition={{ duration: 0.3 }}
+          >
+            <img src={Burger} className="burger-image" alt="Delicious Burger" />
+          </motion.div>
+        </motion.div>
+      </div>
     </div>
   );
 }

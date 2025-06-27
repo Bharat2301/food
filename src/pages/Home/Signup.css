@@ -1,0 +1,110 @@
+/* Main Container */
+.signup-container {
+    display: flex;
+    height: 100vh;
+    font-family: 'Inter', sans-serif;
+    overflow: hidden;
+}
+
+/* Left Side - Signup Form (now wider) */
+.signup-form-container {
+    width: 55%; /* Increased from 55% */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #ffffff;
+    position: relative;
+}
+
+.signup-form {
+    width: 100%;
+    max-width: 450px; /* Slightly wider form */
+    padding: 0 60px; /* More padding on sides */
+}
+
+/* Right Side - Burger Section (now narrower) */
+.burger-section {
+    width: 45%; /* Reduced from 45% */
+    background: #E3000E;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    overflow: hidden;
+    clip-path: polygon(15% 0%, 100% 0%, 100% 100%, 0% 100%);
+}
+
+/* Rest of your existing CSS remains the same */
+.signup-header h1 {
+    font-size: 36px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    color: #000000;
+    text-align: center;
+}
+
+.welcome-message {
+    color: #666666;
+    margin-bottom: 40px;
+    font-size: 16px;
+    font-weight: 400;
+    text-align: center;
+}
+
+.form-group {
+    margin-bottom: 24px;
+}
+
+/* ... keep all other existing CSS rules ... */
+
+/* Responsive adjustments */
+@media (max-width: 1024px) {
+    .signup-form-container {
+        width: 60%;
+    }
+    .burger-section {
+        width: 40%;
+    }
+}
+
+@media (max-width: 768px) {
+    .signup-container {
+        flex-direction: column;
+    }
+
+    .signup-form-container,
+    .burger-section {
+        width: 100%;
+    }
+
+    .burger-section {
+        height: 400px;
+        clip-path: none;
+    }
+
+    .signup-form {
+        padding: 40px;
+        max-width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .signup-form {
+        padding: 30px;
+    }
+}
+
+.signup-button {
+    width: 100%;
+    padding: 14px;
+    background: #E3000E;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-bottom: 24px;
+}

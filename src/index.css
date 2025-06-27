@@ -264,3 +264,9 @@ background: #f1f1f1;
   width: 100%;
   padding-right: 2.5rem; /* Space for eye icon */
 }
+
+@media (max-width: 768px) {
+  header .nav-link {
+    color: var(--bs-nav-link-color)!important;
+  }
+}
