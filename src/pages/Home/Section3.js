@@ -29,7 +29,7 @@ function Section3() {
   useEffect(() => {
     const fetchMenuItems = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/api/menu');
+        const response = await axios.get('https://backened-76cg.onrender.com/api/menu');
         setMenuItems(response.data);
       } catch (error) {
         console.error('Error fetching menu items:', error);
