@@ -29,7 +29,7 @@ function Cart() {
 
     const fetchUserProfile = async () => {
       try {
-        const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/auth/profile`, {
+        const response = await axios.get(`${process.env.REACT_APP_API_URL}api/auth/profile`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         setUser(response.data);
@@ -72,7 +72,7 @@ function Cart() {
     }
 
     try {
-      const keyResponse = await axios.get(`${process.env.REACT_APP_API_URL}/api/razorpay-key`);
+      const keyResponse = await axios.get(`${process.env.REACT_APP_API_URL}api/razorpay-key`);
       const razorpayKey = keyResponse.data.keyId;
 
       const totalAmount = getTotalAmount() * 100;
@@ -84,7 +84,7 @@ function Cart() {
       }
 
       const orderResponse = await axios.post(
-        `${process.env.REACT_APP_API_URL}/api/create-order`,
+        `${process.env.REACT_APP_API_URL}api/create-order`,
         {
           amount: totalAmount,
           currency: 'INR',
@@ -108,7 +108,7 @@ function Cart() {
         handler: async function (response) {
           try {
             await axios.post(
-              `${process.env.REACT_APP_API_URL}/api/save-order`,
+              `${process.env.REACT_APP_API_URL}api/save-order`,
               {
                 items: cartItems.map(item => ({
                   menuItemId: item.menuItemId.id, // Use custom id
