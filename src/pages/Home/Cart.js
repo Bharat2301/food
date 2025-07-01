@@ -3,6 +3,7 @@ import { Container, Table, Button, Form, Spinner, Alert } from 'react-bootstrap'
 import { useNavigate } from 'react-router-dom';
 import useCartStore from '../../store/cartStore';
 import axios from 'axios';
+import { toast } from 'react-toastify';
 import '../../styles/CartStyle.css';
 
 function Cart() {
@@ -19,7 +20,6 @@ function Cart() {
   const [error, setError] = useState(null);
   const [user, setUser] = useState(null);
 
-  // Fetch cart items and user profile when component mounts
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (!token) {
@@ -27,10 +27,9 @@ function Cart() {
       return;
     }
 
-    // Fetch user profile
     const fetchUserProfile = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/api/auth/profile', {
+        const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/auth/profile`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         setUser(response.data);
@@ -39,8 +38,10 @@ function Cart() {
           localStorage.removeItem('token');
           localStorage.removeItem('userId');
           navigate('/login');
+          toast.error('Session expired. Please log in again.');
         } else {
           setError('Failed to fetch user profile');
+          toast.error('Failed to fetch user profile.');
         }
       }
     };
@@ -49,7 +50,6 @@ function Cart() {
     fetchCartItems();
   }, [fetchCartItems, navigate]);
 
-  // Load Razorpay script
   useEffect(() => {
     const script = document.createElement('script');
     script.src = 'https://checkout.razorpay.com/v1/checkout.js';
@@ -67,25 +67,24 @@ function Cart() {
     if (!token) {
       setLoading(false);
       navigate('/login');
+      toast.warn('Please log in to checkout.');
       return;
     }
 
     try {
-      // Fetch Razorpay key
-      const keyResponse = await axios.get('http://localhost:5000/api/razorpay-key');
+      const keyResponse = await axios.get(`${process.env.REACT_APP_API_URL}/api/razorpay-key`);
       const razorpayKey = keyResponse.data.keyId;
 
-      // Calculate total amount in paise
       const totalAmount = getTotalAmount() * 100;
       if (totalAmount <= 0) {
         setError('Cart total is invalid');
         setLoading(false);
+        toast.error('Cart total is invalid.');
         return;
       }
 
-      // Create order on backend
       const orderResponse = await axios.post(
-        'http://localhost:5000/api/create-order',
+        `${process.env.REACT_APP_API_URL}/api/create-order`,
         {
           amount: totalAmount,
           currency: 'INR',
@@ -98,7 +97,6 @@ function Cart() {
 
       const { id: order_id, amount, currency } = orderResponse.data;
 
-      // Initialize Razorpay
       const options = {
         key: razorpayKey,
         amount: amount,
@@ -109,12 +107,11 @@ function Cart() {
         order_id: order_id,
         handler: async function (response) {
           try {
-            // Save order to MongoDB
             await axios.post(
-              'http://localhost:5000/api/save-order',
+              `${process.env.REACT_APP_API_URL}/api/save-order`,
               {
                 items: cartItems.map(item => ({
-                  menuItemId: item._id, // Use MongoDB _id from MenuItem
+                  menuItemId: item.menuItemId.id, // Use custom id
                   quantity: item.quantity,
                 })),
                 totalAmount: getTotalAmount(),
@@ -126,15 +123,12 @@ function Cart() {
                 headers: { Authorization: `Bearer ${token}` },
               }
             );
-            // Clear cart after successful payment
             await clearCart();
-            alert(`Payment Successful! Payment ID: ${response.razorpay_payment_id}`);
+            toast.success(`Payment Successful! Payment ID: ${response.razorpay_payment_id}`);
             navigate('/');
           } catch (err) {
-            setError(
-              err.response?.data?.error ||
-                'Failed to save order. Please try again.'
-            );
+            setError(err.response?.data?.error || 'Failed to save order. Please try again.');
+            toast.error(err.response?.data?.error || 'Failed to save order.');
             if (err.response?.status === 401 || err.response?.status === 403) {
               localStorage.removeItem('token');
               localStorage.removeItem('userId');
@@ -147,7 +141,7 @@ function Cart() {
         prefill: {
           name: user?.name || 'Customer Name',
           email: user?.email || 'customer@example.com',
-          contact: user?.contact || '9998887777', // Add contact to User schema if needed
+          contact: user?.contact || '9998887777',
         },
         theme: {
           color: '#dc3545',
@@ -157,14 +151,13 @@ function Cart() {
       const rzp = new window.Razorpay(options);
       rzp.on('payment.failed', function () {
         setError('Payment failed. Please try again.');
+        toast.error('Payment failed. Please try again.');
         setLoading(false);
       });
       rzp.open();
     } catch (err) {
-      setError(
-        err.response?.data?.error ||
-          'Failed to initiate payment. Please try again.'
-      );
+      setError(err.response?.data?.error || 'Failed to initiate payment. Please try again.');
+      toast.error(err.response?.data?.error || 'Failed to initiate payment.');
       if (err.response?.status === 401 || err.response?.status === 403) {
         localStorage.removeItem('token');
         localStorage.removeItem('userId');
@@ -174,13 +167,14 @@ function Cart() {
     }
   };
 
-  const handleQuantityChange = (id, value) => {
+  const handleQuantityChange = (menuItemId, value) => {
     const quantity = parseInt(value);
     if (isNaN(quantity) || quantity < 1) {
       setError('Quantity must be at least 1');
+      toast.error('Quantity must be at least 1');
       return;
     }
-    updateQuantity(id, quantity);
+    updateQuantity(menuItemId, quantity);
   };
 
   if (cartItems.length === 0) {
@@ -224,31 +218,31 @@ function Cart() {
         </thead>
         <tbody>
           {cartItems.map((item) => (
-            <tr key={item.id}>
+            <tr key={item.menuItemId.id}>
               <td>
                 <img
-                  src={item.image}
-                  alt={item.title}
+                  src={item.menuItemId.image}
+                  alt={item.menuItemId.title}
                   style={{ width: '50px', height: '50px', objectFit: 'cover' }}
                 />
               </td>
-              <td>{item.title}</td>
-              <td>₹ {item.price}</td>
+              <td>{item.menuItemId.title}</td>
+              <td>₹ {item.menuItemId.price}</td>
               <td>
                 <Form.Control
                   type="number"
                   min="1"
                   value={item.quantity}
-                  onChange={(e) => handleQuantityChange(item.id, e.target.value)}
+                  onChange={(e) => handleQuantityChange(item.menuItemId.id, e.target.value)}
                   style={{ width: '80px' }}
                 />
               </td>
-              <td>₹ {item.price * item.quantity}</td>
+              <td>₹ {item.menuItemId.price * item.quantity}</td>
               <td>
                 <Button
                   variant="danger"
                   size="sm"
-                  onClick={() => removeItem(item.id)}
+                  onClick={() => removeItem(item.menuItemId.id)}
                   disabled={loading}
                 >
                   Remove

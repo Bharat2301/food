@@ -1,5 +1,8 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
+import { Link, useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import { toast } from 'react-toastify';
 import './Login.css';
 import Burger from '../../assets/hero/hero-2.png';
 
@@ -8,6 +11,7 @@ function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
 
   const togglePassword = () => {
     setShowPassword(!showPassword);
@@ -16,13 +20,21 @@ function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
-    
-    // Simulate API call
-    setTimeout(() => {
-      console.log('Login attempted with:', { email, password });
-      alert('Login form submitted! Check console for details.');
+
+    try {
+      const response = await axios.post('http://localhost:5000/api/auth/login', {
+        email,
+        password,
+      });
+      localStorage.setItem('token', response.data.token);
+      localStorage.setItem('userId', response.data.userId);
+      toast.success('Login successful!');
       setIsLoading(false);
-    }, 1000);
+      navigate('/');
+    } catch (err) {
+      toast.error(err.response?.data?.message || 'Login failed. Please try again.');
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -95,7 +107,7 @@ function Login() {
             </motion.button>
 
             <div className="signup-link">
-              Don't have an account? <a href="#signup">Sign up</a>
+              Don't have an account? <Link to="/Signup">Sign up</Link>
             </div>
           </form>
         </motion.div>
@@ -106,7 +118,7 @@ function Login() {
         <div className="curved-top-section"></div>
         <div className="sloped-edge"></div>
         
-        {/* Decorative Burgers */}
+        {/* Decorative Hearts */}
         <motion.div 
           className="heart-decoration heart-1"
           initial={{ opacity: 0, scale: 0 }}
@@ -150,7 +162,6 @@ function Login() {
           </motion.span>
         </motion.div>
 
-        {/* Additional floating burger elements */}
         <motion.div 
           className="heart-decoration heart-3"
           initial={{ opacity: 0, scale: 0 }}

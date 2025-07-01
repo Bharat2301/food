@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { toast } from 'react-toastify';
 import './AdminLogin.css';
 import Burger from '../../assets/hero/hero-2.png';
 
@@ -21,26 +22,17 @@ function AdminLogin() {
     setIsLoading(true);
     
     try {
-      // Simulate API call
-      setTimeout(() => {
-        console.log('Admin login attempted with:', { email, password });
-        alert('Admin login successful! Check console for details.');
-        setIsLoading(false);
-        navigate('/admin');
-      }, 1000);
-      
-      // Actual API call would look like this:
-      /*
       const response = await axios.post('http://localhost:5000/api/auth/admin-login', {
         email,
         password,
       });
       localStorage.setItem('token', response.data.token);
       localStorage.setItem('userId', response.data.userId);
-      alert('Admin login successful!');
+      toast.success('Admin login successful!');
+      setIsLoading(false);
       navigate('/admin');
-      */
     } catch (err) {
+      toast.error(err.response?.data?.message || 'Admin login failed. Please try again.');
       setError(err.response?.data?.message || 'Admin login failed. Please try again.');
       setIsLoading(false);
     }
@@ -110,7 +102,7 @@ function AdminLogin() {
             </motion.button>
 
             <div className="user-options">
-              Not an admin? <Link to="/login">User Login</Link> or <Link to="/signup">Sign Up</Link>
+              Not an admin? <Link to="/Login">User Login</Link> or <Link to="/Signup">Sign Up</Link>
             </div>
           </form>
         </motion.div>
@@ -165,7 +157,6 @@ function AdminLogin() {
           </motion.span>
         </motion.div>
 
-        {/* Additional floating burger elements */}
         <motion.div 
           className="heart-decoration heart-3"
           initial={{ opacity: 0, scale: 0 }}

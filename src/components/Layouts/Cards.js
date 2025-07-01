@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Col, Card } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import useCartStore from '../../store/cartStore';
 
 function Cards({ id, image, rating, title, paragraph, price, renderRatingIcons }) {
@@ -9,7 +9,7 @@ function Cards({ id, image, rating, title, paragraph, price, renderRatingIcons }
 
   const handleAddToCart = () => {
     addItem({
-      id,
+      id, // Use custom id (e.g., "0001")
       image,
       title,
       paragraph,
@@ -19,7 +19,8 @@ function Cards({ id, image, rating, title, paragraph, price, renderRatingIcons }
   };
 
   const toggleWishlist = () => {
-    setIsWishlisted(prev => !prev);
+    setIsWishlisted((prev) => !prev);
+    toast.success(isWishlisted ? 'Removed from wishlist' : 'Added to wishlist');
   };
 
   return (

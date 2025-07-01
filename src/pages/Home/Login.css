@@ -352,6 +352,9 @@
         font-size: 20px;
         right: 6%;
     }
+    .burger-section {
+        width: 45%;
+    }
 }
 
 @media (max-width: 768px) {

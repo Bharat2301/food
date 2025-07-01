@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { toast } from 'react-toastify';
 import './Signup.css';
 import Burger from '../../assets/hero/hero-2.png';
 
@@ -25,22 +26,13 @@ function Signup() {
     
     if (password !== confirmPassword) {
       setError('Passwords do not match');
+      toast.error('Passwords do not match');
       return;
     }
     
     setIsLoading(true);
     
     try {
-      // Simulate API call
-      setTimeout(() => {
-        console.log('Signup attempted with:', { username, email, password });
-        alert('Signup successful! Check console for details.');
-        setIsLoading(false);
-        navigate('/login');
-      }, 1000);
-      
-      // Actual API call would look like this:
-      /*
       const response = await axios.post('http://localhost:5000/api/auth/signup', {
         name: username,
         email,
@@ -48,10 +40,11 @@ function Signup() {
       });
       localStorage.setItem('token', response.data.token);
       localStorage.setItem('userId', response.data.userId);
-      alert('Signup successful!');
+      toast.success('Signup successful!');
+      setIsLoading(false);
       navigate('/');
-      */
     } catch (err) {
+      toast.error(err.response?.data?.message || 'Signup failed. Please try again.');
       setError(err.response?.data?.message || 'Signup failed. Please try again.');
       setIsLoading(false);
     }
@@ -156,7 +149,7 @@ function Signup() {
             </motion.button>
 
             <div className="login-link">
-              Already have an account? <Link to="/login" className="login-link">Log in</Link>
+              Already have an account? <Link to="/Login" className="login-link">Log in</Link>
             </div>
           </form>
         </motion.div>
@@ -211,7 +204,6 @@ function Signup() {
           </motion.span>
         </motion.div>
 
-        {/* Additional floating burger elements */}
         <motion.div 
           className="heart-decoration heart-3"
           initial={{ opacity: 0, scale: 0 }}
