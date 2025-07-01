@@ -22,7 +22,7 @@ function Login() {
     setIsLoading(true);
 
     try {
-      const response = await axios.post('https://backened-76cg.onrender.com//api/auth/login', {
+      const response = await axios.post('https://backened-76cg.onrender.com/api/auth/login', {
         email,
         password,
       });

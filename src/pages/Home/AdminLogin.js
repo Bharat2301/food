@@ -22,7 +22,7 @@ function AdminLogin() {
     setIsLoading(true);
     
     try {
-      const response = await axios.post('https://backened-76cg.onrender.com//api/auth/admin-login', {
+      const response = await axios.post('https://backened-76cg.onrender.com/api/auth/admin-login', {
         email,
         password,
       });

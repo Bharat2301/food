@@ -8,7 +8,7 @@ const useCartStore = create((set, get) => ({
     const token = localStorage.getItem('token');
     if (!token) return;
     try {
-      const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/cart`, {
+      const response = await axios.get(`${process.env.REACT_APP_API_URL}api/cart`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       set({ cartItems: response.data });
@@ -34,7 +34,7 @@ const useCartStore = create((set, get) => ({
     }
     try {
       const response = await axios.post(
-        `${process.env.REACT_APP_API_URL}/api/cart`,
+        `${process.env.REACT_APP_API_URL}api/cart`,
         { menuItemId: item.id, quantity }, // Use custom id
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -59,7 +59,7 @@ const useCartStore = create((set, get) => ({
     if (!token) return;
     try {
       const response = await axios.put(
-        `${process.env.REACT_APP_API_URL}/api/cart/${menuItemId}`,
+        `${process.env.REACT_APP_API_URL}api/cart/${menuItemId}`,
         { quantity },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -85,7 +85,7 @@ const useCartStore = create((set, get) => ({
     const token = localStorage.getItem('token');
     if (!token) return;
     try {
-      await axios.delete(`${process.env.REACT_APP_API_URL}/api/cart/${menuItemId}`, {
+      await axios.delete(`${process.env.REACT_APP_API_URL}api/cart/${menuItemId}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       set((state) => ({
@@ -101,7 +101,7 @@ const useCartStore = create((set, get) => ({
     const token = localStorage.getItem('token');
     if (!token) return;
     try {
-      await axios.delete(`${process.env.REACT_APP_API_URL}/api/cart/clear`, {
+      await axios.delete(`${process.env.REACT_APP_API_URL}api/cart/clear`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       set({ cartItems: [] });

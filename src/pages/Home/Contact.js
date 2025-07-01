@@ -15,7 +15,7 @@ function Contact() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('https://backened-76cg.onrender.com//api/contact', formData);
+      await axios.post('https://backened-76cg.onrender.com/api/contact', formData);
       setSuccess('Message sent successfully!');
       setFormData({ name: '', email: '', message: '' });
       setError(null);
