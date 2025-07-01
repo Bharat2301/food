@@ -33,7 +33,7 @@ function Signup() {
     setIsLoading(true);
     
     try {
-      const response = await axios.post('http://localhost:5000/api/auth/signup', {
+      const response = await axios.post('https://backened-76cg.onrender.com//api/auth/signup', {
         name: username,
         email,
         password,
