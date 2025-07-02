@@ -1,256 +1,294 @@
-import React from "react";
-import PropTypes from "prop-types";
-import { motion } from "framer-motion";
-import { useInView } from "react-intersection-observer";
-import image from "../../assets/hero/hero-1.jpg"; // local image import
+import React, { useState, useEffect, useRef } from 'react';
+import './About.css';
 
-// Animation variants
-const fadeInUp = {
-  hidden: { opacity: 0, y: 60 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.8, ease: "easeOut" },
-  },
-};
+const About = () => {
+  const [counters, setCounters] = useState({
+    years: 0,
+    customers: 0,
+    burgers: 0,
+    rating: 0
+  });
+  
+  const [isVisible, setIsVisible] = useState({
+    story: false,
+    features: false,
+    stats: false,
+    gallery: false
+  });
 
-const staggerContainer = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: { staggerChildren: 0.3, delayChildren: 0.2 },
-  },
-};
+  const statsRef = useRef(null);
+  const storyRef = useRef(null);
+  const featuresRef = useRef(null);
+  const galleryRef = useRef(null);
 
-// Section Header
-const SectionHeader = ({ title, color = "text-red-600" }) => (
-  <motion.h2
-    className={`text-4xl md:text-5xl font-extrabold text-center ${color} font-serif mb-12`}
-    variants={fadeInUp}
-  >
-    {title}
-  </motion.h2>
-);
+  // Intersection Observer for animations
+  useEffect(() => {
+    const observerOptions = {
+      threshold: 0.1,
+      rootMargin: '0px 0px -100px 0px'
+    };
 
-SectionHeader.propTypes = {
-  title: PropTypes.string.isRequired,
-  color: PropTypes.string,
-};
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const target = entry.target;
+          
+          if (target === storyRef.current) {
+            setIsVisible(prev => ({ ...prev, story: true }));
+          } else if (target === featuresRef.current) {
+            setIsVisible(prev => ({ ...prev, features: true }));
+          } else if (target === statsRef.current) {
+            setIsVisible(prev => ({ ...prev, stats: true }));
+            startCounters();
+          } else if (target === galleryRef.current) {
+            setIsVisible(prev => ({ ...prev, gallery: true }));
+          }
+        }
+      });
+    }, observerOptions);
 
-// Team Member Card - Updated for circular images
-const TeamMember = ({ name, role, image }) => (
-  <motion.div
-    className="flex flex-col items-center"
-    variants={fadeInUp}
-    whileHover={{ scale: 1.05 }}
-    transition={{ duration: 0.3 }}
-  >
-    <div className="w-40 h-40 md:w-48 md:h-48 rounded-full overflow-hidden border-4 border-white mb-4 shadow-lg">
-      <img
-        src={image}
-        alt={name}
-        className="w-full h-full object-cover"
-        onError={(e) => {
-          e.target.onerror = null;
-          e.target.src = "https://via.placeholder.com/300x300?text=Team+Member";
-        }}
-      />
-    </div>
-    <h3 className="text-xl font-bold text-white">{name}</h3>
-    <p className="text-yellow-300 font-medium">{role}</p>
-  </motion.div>
-);
+    const refs = [storyRef, featuresRef, statsRef, galleryRef];
+    refs.forEach(ref => {
+      if (ref.current) observer.observe(ref.current);
+    });
 
-TeamMember.propTypes = {
-  name: PropTypes.string.isRequired,
-  role: PropTypes.string.isRequired,
-  image: PropTypes.string.isRequired,
-};
+    return () => {
+      refs.forEach(ref => {
+        if (ref.current) observer.unobserve(ref.current);
+      });
+    };
+  }, []);
 
-// Value Card
-const ValueCard = ({ title, description }) => (
-  <motion.div
-    className="p-6 bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-shadow duration-300"
-    variants={fadeInUp}
-    whileHover={{ scale: 1.05 }}
-    transition={{ duration: 0.3 }}
-  >
-    <h3 className="text-2xl font-semibold text-red-600 mb-4">{title}</h3>
-    <p className="text-gray-600 text-lg">{description}</p>
-  </motion.div>
-);
+  // Counter animation
+  const startCounters = () => {
+    const targets = { years: 20, customers: 50000, burgers: 150000, rating: 4.9 };
+    const duration = 2000;
+    const steps = 60;
+    const increment = duration / steps;
 
-ValueCard.propTypes = {
-  title: PropTypes.string.isRequired,
-  description: PropTypes.string.isRequired,
-};
+    Object.keys(targets).forEach(key => {
+      let current = 0;
+      const target = targets[key];
+      const step = target / steps;
 
-// Team & Values Data
-const teamMembers = [
-  {
-    name: "John Burger",
-    role: "Owner",
-    image: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=300&q=80",
-  },
-  {
-    name: "Emma Frye",
-    role: "Head Chef",
-    image: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=300&q=80",
-  },
-  {
-    name: "Mike Relish",
-    role: "Partners",
-    image: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=300&q=80",
-  },
-];
+      const counter = setInterval(() => {
+        current += step;
+        if (current >= target) {
+          current = target;
+          clearInterval(counter);
+        }
+        
+        setCounters(prev => ({
+          ...prev,
+          [key]: key === 'rating' ? current.toFixed(1) : Math.floor(current)
+        }));
+      }, increment);
+    });
+  };
 
-const values = [
-  {
-    title: "Quality",
-    description: "We source the freshest, locally-grown ingredients to craft burgers that burst with flavor.",
-  },
-  {
-    title: "Passion",
-    description: "Our love for burgers fuels our creativity, ensuring every bite is a delightful experience.",
-  },
-  {
-    title: "Community",
-    description: "We support local farmers and give back to our community, building a stronger neighborhood.",
-  },
-];
+  const features = [
+    {
+      icon: '🏆',
+      title: 'Award Winning',
+      description: 'Recognized by food critics and customers nationwide for our exceptional quality and innovative recipes.',
+      delay: '0.1s'
+    },
+    {
+      icon: '🥩',
+      title: 'Premium Ingredients',
+      description: 'We source only the finest, locally-sourced ingredients to ensure every bite is fresh and flavorful.',
+      delay: '0.2s'
+    },
+    {
+      icon: '👨‍🍳',
+      title: 'Master Chefs',
+      description: 'Our experienced culinary team brings passion and expertise to every burger they craft.',
+      delay: '0.3s'
+    },
+    {
+      icon: '❤️',
+      title: 'Family Legacy',
+      description: 'A family-owned business built on tradition, love, and an unwavering commitment to excellence.',
+      delay: '0.4s'
+    }
+  ];
 
-const AboutPage = () => {
-  const [heroRef, heroInView] = useInView({ triggerOnce: true, threshold: 0.2 });
-  const [storyRef, storyInView] = useInView({ triggerOnce: true, threshold: 0.2 });
-  const [teamRef, teamInView] = useInView({ triggerOnce: true, threshold: 0.2 });
-  const [valuesRef, valuesInView] = useInView({ triggerOnce: true, threshold: 0.2 });
-  const [ctaRef, ctaInView] = useInView({ triggerOnce: true, threshold: 0.2 });
+  const galleryImages = [
+    {
+      src: 'https://images.pexels.com/photos/1639557/pexels-photo-1639557.jpeg?auto=compress&cs=tinysrgb&w=600',
+      alt: 'Signature Burger',
+      title: 'Our Signature Creation'
+    },
+    {
+      src: 'https://images.pexels.com/photos/1639562/pexels-photo-1639562.jpeg?auto=compress&cs=tinysrgb&w=600',
+      alt: 'Restaurant Interior',
+      title: 'Cozy Atmosphere'
+    },
+    {
+      src: 'https://images.pexels.com/photos/2089717/pexels-photo-2089717.jpeg?auto=compress&cs=tinysrgb&w=600',
+      alt: 'Chef at Work',
+      title: 'Crafted with Care'
+    },
+    {
+      src: 'https://images.pexels.com/photos/1556698/pexels-photo-1556698.jpeg?auto=compress&cs=tinysrgb&w=600',
+      alt: 'Fresh Ingredients',
+      title: 'Farm Fresh Quality'
+    }
+  ];
 
   return (
-    <div className="bg-gradient-to-b from-yellow-50 to-orange-100 min-h-screen font-sans">
-      {/* Hero Section with Background */}
-      <motion.section
-        className="relative py-28 md:py-40 text-center bg-cover bg-center bg-no-repeat"
-        style={{ backgroundImage: `url(${image})` }}
-        initial="hidden"
-        animate={heroInView ? "visible" : "hidden"}
-        variants={staggerContainer}
-        ref={heroRef}
-      >
-        {/* Overlay for contrast */}
-        <div className="absolute inset-0 bg-black bg-opacity-50"></div>
-        {/* Content */}
-        <div className="relative z-10 max-w-5xl mx-auto px-4 text-white">
-          <motion.h1
-            className="text-4xl md:text-6xl font-serif font-bold mb-6"
-            variants={fadeInUp}
-          >
-            Welcome to Tasty Burger
-          </motion.h1>
-          <motion.p
-            className="text-lg md:text-xl max-w-3xl mx-auto"
-            variants={fadeInUp}
-          >
-            Savor the art of burgers crafted with passion, quality, and a sprinkle of love since 2010.
-          </motion.p>
+    <section className="about-section">
+      {/* Hero Section */}
+      <div className="about-hero">
+        <div className="hero-background"></div>
+        <div className="hero-content">
+          <h1 className="hero-title">
+            Our <span className="highlight">Story</span>
+          </h1>
+          <p className="hero-subtitle">
+            Crafting exceptional burgers since 2023, we are dedicated to bringing you the best 
+            flavors and experiences. Join us on a journey through Our History.
+          </p>
         </div>
-      </motion.section>
+        <div className="scroll-indicator">
+          <div className="scroll-arrow"></div>
+        </div>
+      </div>
 
-      {/* Our Story Section */}
-      <motion.section
-        className="py-20 px-4 md:px-16 lg:px-32"
-        initial="hidden"
-        animate={storyInView ? "visible" : "hidden"}
-        variants={staggerContainer}
-        ref={storyRef}
-      >
-        <SectionHeader title="Our Story" />
-        <motion.div className="grid md:grid-cols-2 gap-12 items-center" variants={fadeInUp}>
-          <div className="space-y-6">
-            <p className="text-lg text-gray-600 leading-relaxed">
-              Tasty Burger began as a humble food truck, driven by John Burger's dream to redefine the burger experience. With fresh, local ingredients and a relentless pursuit of flavor, we quickly won hearts.
-            </p>
-            <p className="text-lg text-gray-600 leading-relaxed">
-              Now a cherished local chain, we stay true to our roots, handcrafting each burger with care. Our story is one of passion, quality, and community—join us in celebrating the joy of burgers!
-            </p>
+      {/* Story Section */}
+      <div className="container">
+        <div ref={storyRef} className={`story-section ${isVisible.story ? 'animate-in' : ''}`}>
+          <div className="story-grid">
+            <div className="story-content">
+              <h2 className="section-title">
+                Where It All <span className="highlight">Began</span>
+              </h2>
+              <div className="story-text">
+                <p className="story-paragraph">
+                  In 2003, our founder Sarah Mitchell had a simple dream: to create the perfect burger 
+                  that would bring families and friends together. What started as a small corner shop 
+                  with just three tables has grown into a beloved community institution.
+                </p>
+                <p className="story-paragraph">
+                  Every recipe in our kitchen tells a story of passion, innovation, and dedication. 
+                  From our signature secret sauce to our hand-cut fries, each element is crafted 
+                  with the same love and attention that Sarah put into that very first burger.
+                </p>
+                <p className="story-paragraph">
+                  Today, we continue to honor that original vision while constantly innovating 
+                  to bring you new flavors and experiences that exceed your expectations.
+                </p>
+              </div>
+              <div className="story-cta">
+                <button className="cta-button">
+                  <span>Discover Our Menu</span>
+                  <div className="button-arrow">→</div>
+                </button>
+              </div>
+            </div>
+            <div className="story-image">
+              <div className="image-wrapper">
+                <img 
+                  src="https://images.pexels.com/photos/1633578/pexels-photo-1633578.jpeg?auto=compress&cs=tinysrgb&w=800" 
+                  alt="Our founder Sarah Mitchell"
+                  className="founder-image"
+                />
+                <div className="image-overlay">
+                  <div className="overlay-content">
+                    <h3>Sarah Mitchell</h3>
+                    <p>Founder & Head Chef</p>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
-          <motion.img
-            src="/images/burger-prep.jpg"
-            alt="Burger preparation"
-            className="rounded-2xl shadow-2xl w-full h-auto"
-            whileHover={{ scale: 1.03 }}
-            transition={{ duration: 0.4 }}
-          />
-        </motion.div>
-      </motion.section>
+        </div>
 
-      {/* Team Section - Updated Layout */}
-      <motion.section
-        className="py-20 px-4 md:px-8 bg-red-700 text-white"
-        initial="hidden"
-        animate={teamInView ? "visible" : "hidden"}
-        variants={staggerContainer}
-        ref={teamRef}
-      >
-        <SectionHeader title="Meet Our Team" color="text-white" />
-        <motion.div 
-          className="max-w-4xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8" // Responsive grid
-          variants={staggerContainer}
-        >
-          {teamMembers.map((member, index) => (
-            <TeamMember key={index} {...member} />
-          ))}
-        </motion.div>
-      </motion.section>
+        {/* Features Section */}
+        <div ref={featuresRef} className={`features-section ${isVisible.features ? 'animate-in' : ''}`}>
+          <h2 className="section-title text-center">
+            What Makes Us <span className="highlight">Special</span>
+          </h2>
+          <div className="features-grid">
+            {features.map((feature, index) => (
+              <div 
+                key={index} 
+                className="feature-card"
+                style={{ animationDelay: feature.delay }}
+              >
+                <div className="feature-icon">{feature.icon}</div>
+                <h3 className="feature-title">{feature.title}</h3>
+                <p className="feature-description">{feature.description}</p>
+                <div className="feature-hover-effect"></div>
+              </div>
+            ))}
+          </div>
+        </div>
 
-      {/* Values Section */}
-      <motion.section
-        className="py-20 px-4 md:px-16 lg:px-32 bg-white"
-        initial="hidden"
-        animate={valuesInView ? "visible" : "hidden"}
-        variants={staggerContainer}
-        ref={valuesRef}
-      >
-        <SectionHeader title="Our Values" />
-        <motion.div className="grid md:grid-cols-3 gap-8" variants={staggerContainer}>
-          {values.map((value, index) => (
-            <ValueCard key={index} {...value} />
-          ))}
-        </motion.div>
-      </motion.section>
+        {/* Stats Section */}
+        <div ref={statsRef} className={`stats-section ${isVisible.stats ? 'animate-in' : ''}`}>
+          <div className="stats-background">
+            <div className="stats-overlay"></div>
+            <div className="stats-content">
+              <h2 className="stats-title">Our Journey in Numbers</h2>
+              <div className="stats-grid">
+              
+                <div className="stat-item">
+                  <div className="stat-number">{counters.customers.toLocaleString()}+</div>
+                  <div className="stat-label">Happy Customers</div>
+                </div>
+                <div className="stat-item">
+                  <div className="stat-number">{counters.burgers.toLocaleString()}+</div>
+                  <div className="stat-label">Burgers Served</div>
+                </div>
+                <div className="stat-item">
+                  <div className="stat-number">{counters.rating}★</div>
+                  <div className="stat-label">Customer Rating</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
 
-      {/* CTA Section */}
-      <motion.section
-        className="py-24 text-center bg-yellow-400"
-        initial="hidden"
-        animate={ctaInView ? "visible" : "hidden"}
-        variants={staggerContainer}
-        ref={ctaRef}
-      >
-        <motion.h2
-          className="text-4xl md:text-5xl font-serif font-bold text-red-700 mb-6"
-          variants={fadeInUp}
-        >
-          Craving the Ultimate Burger?
-        </motion.h2>
-        <motion.p
-          className="text-lg md:text-xl text-gray-800 mb-10 max-w-2xl mx-auto"
-          variants={fadeInUp}
-        >
-          Dive into the Tasty Burger experience—where every bite tells a story of flavor and passion.
-        </motion.p>
-        <motion.a
-          href="/menu"
-          className="inline-block bg-red-700 text-white px-10 py-4 rounded-full text-lg font-semibold hover:bg-red-800 transition duration-300"
-          variants={fadeInUp}
-          whileHover={{ scale: 1.1 }}
-          whileTap={{ scale: 0.95 }}
-        >
-          Explore Our Menu
-        </motion.a>
-      </motion.section>
-    </div>
+        {/* Gallery Section */}
+        <div ref={galleryRef} className={`gallery-section ${isVisible.gallery ? 'animate-in' : ''}`}>
+          <h2 className="section-title text-center">
+            A Glimpse Into Our <span className="highlight">World</span>
+          </h2>
+          <div className="gallery-grid">
+            {galleryImages.map((image, index) => (
+              <div key={index} className="gallery-item">
+                <div className="gallery-image-wrapper">
+                  <img 
+                    src={image.src} 
+                    alt={image.alt}
+                    className="gallery-image"
+                  />
+                  <div className="gallery-overlay">
+                    <h3 className="gallery-title">{image.title}</h3>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Call to Action */}
+        <div className="cta-section">
+          <div className="cta-content">
+            <h2 className="cta-title">Ready to Experience the Difference?</h2>
+            <p className="cta-subtitle">
+              Join thousands of satisfied customers who have made us their go-to burger destination.
+            </p>
+            <div className="cta-buttons">
+              <button className="cta-primary">Order Now</button>
+              <button className="cta-secondary">Visit Us</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
   );
 };
 
-export default AboutPage;
+export default About;
