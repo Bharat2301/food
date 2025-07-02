@@ -37,15 +37,15 @@ SectionHeader.propTypes = {
   color: PropTypes.string,
 };
 
-// Team Member Card
+// Team Member Card - Updated for circular images
 const TeamMember = ({ name, role, image }) => (
   <motion.div
-    className="bg-white rounded-2xl shadow-xl overflow-hidden flex-1 min-w-0 max-w-sm mx-auto"
-    whileHover={{ y: -8, scale: 1.03 }}
-    transition={{ duration: 0.4, ease: "easeOut" }}
+    className="flex flex-col items-center"
     variants={fadeInUp}
+    whileHover={{ scale: 1.05 }}
+    transition={{ duration: 0.3 }}
   >
-    <div className="w-full h-64 relative">
+    <div className="w-40 h-40 md:w-48 md:h-48 rounded-full overflow-hidden border-4 border-white mb-4 shadow-lg">
       <img
         src={image}
         alt={name}
@@ -56,10 +56,8 @@ const TeamMember = ({ name, role, image }) => (
         }}
       />
     </div>
-    <div className="p-6 text-center">
-      <h3 className="text-xl font-bold text-gray-900">{name}</h3>
-      <p className="text-red-600 font-medium">{role}</p>
-    </div>
+    <h3 className="text-xl font-bold text-white">{name}</h3>
+    <p className="text-yellow-300 font-medium">{role}</p>
   </motion.div>
 );
 
@@ -91,39 +89,33 @@ ValueCard.propTypes = {
 const teamMembers = [
   {
     name: "John Burger",
-    role: "Founder",
-    image:
-      "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=300&q=80",
+    role: "Owner",
+    image: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=300&q=80",
   },
   {
     name: "Emma Frye",
     role: "Head Chef",
-    image:
-      "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=300&q=80",
+    image: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=300&q=80",
   },
   {
     name: "Mike Relish",
-    role: "Manager",
-    image:
-      "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=300&q=80",
+    role: "Partners",
+    image: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=300&q=80",
   },
 ];
 
 const values = [
   {
     title: "Quality",
-    description:
-      "We source the freshest, locally-grown ingredients to craft burgers that burst with flavor.",
+    description: "We source the freshest, locally-grown ingredients to craft burgers that burst with flavor.",
   },
   {
     title: "Passion",
-    description:
-      "Our love for burgers fuels our creativity, ensuring every bite is a delightful experience.",
+    description: "Our love for burgers fuels our creativity, ensuring every bite is a delightful experience.",
   },
   {
     title: "Community",
-    description:
-      "We support local farmers and give back to our community, building a stronger neighborhood.",
+    description: "We support local farmers and give back to our community, building a stronger neighborhood.",
   },
 ];
 
@@ -192,7 +184,7 @@ const AboutPage = () => {
         </motion.div>
       </motion.section>
 
-      {/* Team Section */}
+      {/* Team Section - Updated Layout */}
       <motion.section
         className="py-20 px-4 md:px-8 bg-red-700 text-white"
         initial="hidden"
@@ -201,16 +193,14 @@ const AboutPage = () => {
         ref={teamRef}
       >
         <SectionHeader title="Meet Our Team" color="text-white" />
-        <div className="max-w-6xl mx-auto">
-          <motion.div
-            className="flex flex-col sm:flex-row gap-6 justify-center items-stretch"
-            variants={staggerContainer}
-          >
-            {teamMembers.map((member, index) => (
-              <TeamMember key={index} {...member} />
-            ))}
-          </motion.div>
-        </div>
+        <motion.div 
+          className="max-w-4xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8" // Responsive grid
+          variants={staggerContainer}
+        >
+          {teamMembers.map((member, index) => (
+            <TeamMember key={index} {...member} />
+          ))}
+        </motion.div>
       </motion.section>
 
       {/* Values Section */}
@@ -251,7 +241,7 @@ const AboutPage = () => {
         </motion.p>
         <motion.a
           href="/menu"
-          className="inline-block bg-red-700 text-red px-10 py-4 rounded-full text-lg font-semibold hover:bg-red-800 transition duration-300"
+          className="inline-block bg-red-700 text-white px-10 py-4 rounded-full text-lg font-semibold hover:bg-red-800 transition duration-300"
           variants={fadeInUp}
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.95 }}
