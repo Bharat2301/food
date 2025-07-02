@@ -84,7 +84,7 @@ function Cart() {
       }
 
       const orderResponse = await axios.post(
-        `${process.env.REACT_APP_API_URL}api/create-order`,
+        `${process.env.REACT_APP_API_URL}/api/razorpay/create-order`,
         {
           amount: totalAmount,
           currency: 'INR',
