@@ -72,7 +72,7 @@ function Cart() {
     }
 
     try {
-      const keyResponse = await axios.get(`${process.env.REACT_APP_API_URL}api/razorpay-key`);
+      const keyResponse = await axios.get(`${process.env.REACT_APP_API_URL}api/razorpay/razorpay-key`);
       const razorpayKey = keyResponse.data.keyId;
 
       const totalAmount = getTotalAmount() * 100;
